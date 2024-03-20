@@ -141,6 +141,10 @@ void controlServo(char val) {
 
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
+#include <SPI.h>
+#include <ServoCds55.h>
+ServoCds55 myservo;
+int servoNum = 2;
 
 /* Example code for the Adafruit TCS34725 breakout library */
 
@@ -157,7 +161,7 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS347
 
 void setup(void) {
   Serial.begin(9600);
-
+  myservo.begin();
   if (tcs.begin()) {
     Serial.println("Found sensor");
   } else {
@@ -169,8 +173,25 @@ void setup(void) {
 }
 
 void loop(void) {
+  myservo.rotate(1, 40);
+  myservo.rotate(2, 80);
+  myservo.rotate(3, 120);
+  myservo.rotate(4, 160);
+  myservo.rotate(5, 200);
+  myservo.rotate(6, 240);
+  myservo.rotate(7, 280);
+  /*
+  for(int i = 0; i < 30; i++) {
+    myservo.rotate(servoNum, 10 * i);
+    delay(50);
+  }
+  for(int i = 30; i > 0; i--) {
+    myservo.rotate(servoNum, 10 * i);
+    delay(50);
+  }
+  myservo.rotate(servoNum, 0);
+  */
   uint16_t r, g, b, c, colorTemp, lux;
-
   tcs.getRawData(&r, &g, &b, &c);
   // colorTemp = tcs.calculateColorTemperature(r, g, b);
   colorTemp = tcs.calculateColorTemperature_dn40(r, g, b, c);
