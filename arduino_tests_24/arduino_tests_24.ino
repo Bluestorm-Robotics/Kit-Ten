@@ -144,7 +144,7 @@ void controlServo(char val) {
 #include <SPI.h>
 #include <ServoCds55.h>
 ServoCds55 myservo;
-int servoNum = 2;
+int servoNum = 1;
 
 /* Example code for the Adafruit TCS34725 breakout library */
 
@@ -173,6 +173,7 @@ void setup(void) {
 }
 
 void loop(void) {
+  /*
   myservo.rotate(1, 40);
   myservo.rotate(2, 80);
   myservo.rotate(3, 120);
@@ -180,7 +181,8 @@ void loop(void) {
   myservo.rotate(5, 200);
   myservo.rotate(6, 240);
   myservo.rotate(7, 280);
-  /*
+  
+  
   for(int i = 0; i < 30; i++) {
     myservo.rotate(servoNum, 10 * i);
     delay(50);
@@ -189,8 +191,9 @@ void loop(void) {
     myservo.rotate(servoNum, 10 * i);
     delay(50);
   }
-  myservo.rotate(servoNum, 0);
   */
+  myservo.rotate(servoNum, 0);
+  
   uint16_t r, g, b, c, colorTemp, lux;
   tcs.getRawData(&r, &g, &b, &c);
   // colorTemp = tcs.calculateColorTemperature(r, g, b);
@@ -204,4 +207,5 @@ void loop(void) {
   Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
   Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
   Serial.println(" ");
+  
 }
