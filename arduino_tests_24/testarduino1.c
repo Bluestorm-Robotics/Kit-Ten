@@ -232,6 +232,7 @@ void loop(void) {
   servo1.rotate(servo1ID, 90);
   servo2.rotate(servo2ID, 30);
   
+  /*
   uint16_t r, g, b, c, colorTemp, lux;
   tcs.getRawData(&r, &g, &b, &c);
   // colorTemp = tcs.calculateColorTemperature(r, g, b);
@@ -245,5 +246,6 @@ void loop(void) {
   Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
   Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
   Serial.println(" ");
+  */
   
 }
