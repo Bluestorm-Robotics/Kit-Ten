@@ -61,6 +61,9 @@ boolean inputComplete = false;
 void setup () {
   Serial.begin (115200);
   myservo.begin ();
+  servo1.begin();
+  servo2.begin();
+  servo3.begin();
 }
 
 void loop () {
@@ -83,6 +86,21 @@ void loop () {
     inputComplete = false;
   }
   */ /*
+}
+
+voidmoveServo1()
+{
+  servo1.rotate(0, 90);
+}
+
+voidmoveServo2()
+{
+  servo1.rotate(0, 180);
+}
+
+voidmoveServo3()
+{
+  servo1.rotate(0, 210);
 }
 
 void serialEvent() {
@@ -143,8 +161,9 @@ void controlServo(char val) {
 #include "Adafruit_TCS34725.h"
 #include <SPI.h>
 #include <ServoCds55.h>
-ServoCds55 myservo;
-int servoNum = 1;
+ServoCds55 servo1, servo2;
+int servo1ID = 1;
+int servo2ID = 2;
 
 /* Example code for the Adafruit TCS34725 breakout library */
 
@@ -161,7 +180,18 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS347
 
 void setup(void) {
   Serial.begin(9600);
-  myservo.begin();
+  servo1.begin();
+  servo2.begin();
+  for (int buf = 0; buf < 255; buf++) {
+        servo1.SetID(buf, servo1ID);
+        if (buf % 50 == 0) Serial.print(".");
+      }
+      delay(2000);
+  for (int buf = 2; buf < 255; buf++) {
+        servo2.SetID(buf, servo2ID);
+        if (buf % 50 == 0) Serial.print(".");
+      }
+      delay(2000);
   if (tcs.begin()) {
     Serial.println("Found sensor");
   } else {
@@ -169,10 +199,29 @@ void setup(void) {
     while (1);
   }
 
+  //voidmoveServo1()
+  /*
+{
+  servo1.rotate(0, 90);
+}
+
+voidmoveServo2()
+{
+  servo1.rotate(0, 180);
+}
+
+voidmoveServo3()
+{
+  servo1.rotate(0, 210);
+}
+*/
   // Now we're ready to get readings!
 }
 
 void loop(void) {
+
+  servo1.rotate(servo1ID,90);
+  servo2.rotate(servo2ID,90);
   /*
   myservo.rotate(1, 40);
   myservo.rotate(2, 80);
@@ -181,7 +230,7 @@ void loop(void) {
   myservo.rotate(5, 200);
   myservo.rotate(6, 240);
   myservo.rotate(7, 280);
-  */
+  
   
   for(int i = 0; i < 30; i++) {
     myservo.rotate(servoNum, 10 * i);
@@ -191,8 +240,11 @@ void loop(void) {
     myservo.rotate(servoNum, 10 * i);
     delay(50);
   }
+  */
   
-  /*
+  servo1.rotate(servo1ID, 90);
+  servo2.rotate(servo2ID, 30);
+  
   uint16_t r, g, b, c, colorTemp, lux;
   tcs.getRawData(&r, &g, &b, &c);
   // colorTemp = tcs.calculateColorTemperature(r, g, b);
@@ -206,13 +258,5 @@ void loop(void) {
   Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
   Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
   Serial.println(" ");
-
-    int vel = lux / 30;
-  if(vel > 300) {
-    vel = 300;
-  }
-  Serial.println(vel);
-  myservo.rotate(servoNum, vel);
-  delay(50);
-  */
+  
 }
