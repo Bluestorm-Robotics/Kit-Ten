@@ -217,17 +217,16 @@ void loop(void) {
   myservo.rotate(5, 200);
   myservo.rotate(6, 240);
   myservo.rotate(7, 280);
-  
+  */
   
   for(int i = 0; i < 30; i++) {
-    myservo.rotate(servoNum, 10 * i);
+    servo1.rotate(servo1ID, 10 * i);
     delay(50);
   }
   for(int i = 30; i > 0; i--) {
-    myservo.rotate(servoNum, 10 * i);
+    servo2.rotate(servo2ID, 10 * i);
     delay(50);
   }
-  */
   
   servo1.rotate(servo1ID, 90);
   servo2.rotate(servo2ID, 30);
