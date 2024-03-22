@@ -163,7 +163,7 @@ void controlServo(char val) {
 #include <ServoCds55.h>
 ServoCds55 servo1, servo2;
 int servo1ID = 1;
-int servo1ID = 2;
+int servo2ID = 2;
 
 /* Example code for the Adafruit TCS34725 breakout library */
 
@@ -189,6 +189,7 @@ void setup(void) {
     while (1);
   }
 
+  /*
   voidmoveServo1()
 {
   servo1.rotate(0, 90);
@@ -206,6 +207,8 @@ void loop(void) {
 
   servo1.rotate(servo1ID,90);
   servo2.rotate(servo2ID,90);
+  *\
+  
   /*
   myservo.rotate(1, 40);
   myservo.rotate(2, 80);
@@ -227,7 +230,7 @@ void loop(void) {
   */
   
   servo1.rotate(servo1ID, 90);
-  servo2.rotate(servo1ID, 30);
+  servo2.rotate(servo2ID, 30);
   
   uint16_t r, g, b, c, colorTemp, lux;
   tcs.getRawData(&r, &g, &b, &c);
