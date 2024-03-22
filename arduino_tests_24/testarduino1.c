@@ -196,12 +196,7 @@ void setup(void) {
 
 voidmoveServo2()
 {
-  servo1.rotate(0, 180);
-}
-
-voidmoveServo3()
-{
-  servo1.rotate(0, 210);
+  servo2.rotate(0, 180);
 }
 
   // Now we're ready to get readings!
