@@ -39,7 +39,7 @@ void setup() {
   }
 }
 
-void loop() {
+void loop() {  
   uint16_t r, g, b, c, colorTemp, lux;
 
   tcs.getRawData(&r, &g, &b, &c);
@@ -54,10 +54,49 @@ void loop() {
   Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
   Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
   Serial.println(" ");
+  
+  /*
+  int speed = lux / 10;
+  analogWrite(enA, speed);
+	analogWrite(enB, speed);
+  digitalWrite(in1, HIGH);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, HIGH);
+	digitalWrite(in4, LOW);
+  */
+
+  
+  if(lux > 1500) {
+    analogWrite(enA, 255);
+	analogWrite(enB, 255);
+  digitalWrite(in1, HIGH);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, HIGH);
+	digitalWrite(in4, LOW);
+  }
+  else if (lux < 500) {
+    digitalWrite(in1, LOW);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, LOW);
+	digitalWrite(in4, LOW);
+  }
+  else {
+    analogWrite(enA, 50);
+	analogWrite(enB, 50);
+  digitalWrite(in1, HIGH);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, HIGH);
+	digitalWrite(in4, LOW);
+  }
+  
+  
+  
+  /*
 	directionControl();
 	delay(1000);
 	speedControl();
 	delay(1000);
+  */
 }
 
 // This function lets you control spinning direction of motors
