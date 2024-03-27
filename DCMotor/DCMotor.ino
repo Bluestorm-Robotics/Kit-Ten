@@ -66,41 +66,6 @@ void loop() {
   Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
   Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
   Serial.println(" ");
-  
-  /*
-  int speed = lux / 10;
-  analogWrite(enA, speed);
-	analogWrite(enB, speed);
-  digitalWrite(in1, HIGH);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, HIGH);
-	digitalWrite(in4, LOW);
-  */
-
-  
-  if(lux > 1500) {
-    analogWrite(enA, 255);
-	analogWrite(enB, 255);
-  digitalWrite(in1, HIGH);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, HIGH);
-	digitalWrite(in4, LOW);
-  }
-  else {
-  digitalWrite(in1, LOW);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, LOW);
-	digitalWrite(in4, LOW);
-  }
-  
-  
-  
-  /*
-	directionControl();
-	delay(1000);
-	speedControl();
-	delay(1000);
-  */
 
   // Clears the trigPin
   digitalWrite(trigPin, LOW);
@@ -116,6 +81,44 @@ void loop() {
   // Prints the distance on the Serial Monitor
   Serial.print("Distance: ");
   Serial.println(distance);
+
+  /*
+  int speed = lux / 10;
+  analogWrite(enA, speed);
+	analogWrite(enB, speed);
+  digitalWrite(in1, HIGH);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, HIGH);
+	digitalWrite(in4, LOW);
+  */
+
+  int speed = distance;
+  if(speed > 255) {
+    speed = 255;
+  }
+
+  if(lux > 1250) {
+    analogWrite(enA, speed);
+	analogWrite(enB, speed);
+  digitalWrite(in1, HIGH);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, HIGH);
+	digitalWrite(in4, LOW);
+  }
+  else {
+  digitalWrite(in1, LOW);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, LOW);
+	digitalWrite(in4, LOW);
+  }
+  
+  
+  /*
+	directionControl();
+	delay(1000);
+	speedControl();
+	delay(1000);
+  */
 
 }
 
