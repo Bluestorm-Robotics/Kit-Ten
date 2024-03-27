@@ -14,6 +14,14 @@ int in4 = 4;
 /* Initialise with specific int time and gain values */
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
+// defines pins numbers
+const int trigPin = 11;
+const int echoPin = 12;
+
+// defines variables
+long duration;
+int distance;
+
 void setup() {
 	// Set all the motor control pins to outputs
 	pinMode(enA, OUTPUT);
@@ -37,6 +45,10 @@ void setup() {
     Serial.println("No TCS34725 found ... check your connections");
     while (1);
   }
+
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  
 }
 
 void loop() {  
@@ -74,18 +86,10 @@ void loop() {
 	digitalWrite(in3, HIGH);
 	digitalWrite(in4, LOW);
   }
-  else if (lux < 500) {
-    digitalWrite(in1, LOW);
+  else {
+  digitalWrite(in1, LOW);
 	digitalWrite(in2, LOW);
 	digitalWrite(in3, LOW);
-	digitalWrite(in4, LOW);
-  }
-  else {
-    analogWrite(enA, 50);
-	analogWrite(enB, 50);
-  digitalWrite(in1, HIGH);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, HIGH);
 	digitalWrite(in4, LOW);
   }
   
@@ -97,6 +101,22 @@ void loop() {
 	speedControl();
 	delay(1000);
   */
+
+  // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance = duration * 0.034 / 2;
+  // Prints the distance on the Serial Monitor
+  Serial.print("Distance: ");
+  Serial.println(distance);
+
 }
 
 // This function lets you control spinning direction of motors
@@ -155,3 +175,4 @@ void speedControl() {
 	digitalWrite(in3, LOW);
 	digitalWrite(in4, LOW);
 }
+
