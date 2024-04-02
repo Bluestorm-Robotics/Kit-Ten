@@ -82,6 +82,69 @@ void loop() {
   Serial.print("Distance: ");
   Serial.println(distance);
 
+  analogWrite(enA, 75);
+	analogWrite(enB, 75);
+  digitalWrite(in1, HIGH);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, HIGH);
+	digitalWrite(in4, LOW);
+
+  delay(2000);
+
+  digitalWrite(in1, LOW);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, LOW);
+	digitalWrite(in4, LOW);
+
+  delay(1000);
+
+  digitalWrite(in1, LOW);
+	digitalWrite(in2, HIGh);
+	digitalWrite(in3, LOW);
+	digitalWrite(in4, HIGH);
+
+  delay(2000);
+
+  digitalWrite(in1, LOW);
+	digitalWrite(in2, HIGH);
+	digitalWrite(in3, HIGH);
+	digitalWrite(in4, LOW);
+
+  delay(1000);
+
+  digitalWrite(in1, HIGH);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, LOW);
+	digitalWrite(in4, HIGH);
+
+  delay(1000);
+
+  digitalWrite(in1, HIGH);
+	digitalWrite(in2, HIGH);
+	digitalWrite(in3, HIGH);
+	digitalWrite(in4, HIGH);
+  
+  delay(1000);
+/*
+  if(distance < 10) {
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, LOW);
+    delay(100);
+    digitalWrite(in1, LOW);
+	  digitalWrite(in2, HIGH);
+	  digitalWrite(in3, HIGH);
+	  digitalWrite(in4, LOW);
+    delay(1000);
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, LOW);
+    delay(100);
+  }
+  */
+
   /*
   int speed = lux / 10;
   analogWrite(enA, speed);
@@ -92,6 +155,7 @@ void loop() {
 	digitalWrite(in4, LOW);
   */
 
+  /*
   int speed = distance;
   if(speed > 255) {
     speed = 255;
@@ -111,7 +175,7 @@ void loop() {
 	digitalWrite(in3, LOW);
 	digitalWrite(in4, LOW);
   }
-  
+  */
   
   /*
 	directionControl();
@@ -120,6 +184,22 @@ void loop() {
 	delay(1000);
   */
 
+}
+
+void leftTurn() {
+  digitalWrite(in1, HIGH);
+	digitalWrite(in2, LOW);
+	digitalWrite(in3, LOW);
+	digitalWrite(in4, HIGH);
+  delay(1000);
+}
+
+void rightTurn() {
+  digitalWrite(in1, LOW);
+	digitalWrite(in2, HIGH);
+	digitalWrite(in3, HIGH);
+	digitalWrite(in4, LOW);
+  delay(1000);
 }
 
 // This function lets you control spinning direction of motors
