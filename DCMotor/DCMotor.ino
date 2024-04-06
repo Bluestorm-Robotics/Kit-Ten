@@ -11,12 +11,16 @@ int enB = 3;
 int in3 = 5;
 int in4 = 4;
 
+bool on = false;
+
 /* Initialise with specific int time and gain values */
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
 // defines pins numbers
 const int trigPin = 11;
 const int echoPin = 12;
+const int onPin = 13;
+const int offPin = 10;
 
 // defines variables
 long duration;
@@ -48,6 +52,9 @@ void setup() {
 
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+
+  pinMode(onPin, INPUT);
+  pinMode(offPin, INPUT);
   
 }
 
@@ -82,50 +89,64 @@ void loop() {
   Serial.print("Distance: ");
   Serial.println(distance);
 
-  analogWrite(enA, 75);
-	analogWrite(enB, 75);
-  digitalWrite(in1, HIGH);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, HIGH);
-	digitalWrite(in4, LOW);
+  Serial.println(digitalRead(onPin) + " " + digitalRead(offPin));
 
-  delay(2000);
+  if(digitalRead(onPin) == 0) {
+    on = true;
+  }
+  if(digitalRead(offPin) == 0) {
+    on = false;
+  }
 
-  digitalWrite(in1, LOW);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, LOW);
-	digitalWrite(in4, LOW);
+  if(on) {
+    analogWrite(enA, 75);
+    analogWrite(enB, 75);
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+  }
 
-  delay(1000);
-
-  digitalWrite(in1, LOW);
-	digitalWrite(in2, HIGh);
-	digitalWrite(in3, LOW);
-	digitalWrite(in4, HIGH);
-
-  delay(2000);
-
-  digitalWrite(in1, LOW);
-	digitalWrite(in2, HIGH);
-	digitalWrite(in3, HIGH);
-	digitalWrite(in4, LOW);
-
-  delay(1000);
-
-  digitalWrite(in1, HIGH);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, LOW);
-	digitalWrite(in4, HIGH);
-
-  delay(1000);
-
-  digitalWrite(in1, HIGH);
-	digitalWrite(in2, HIGH);
-	digitalWrite(in3, HIGH);
-	digitalWrite(in4, HIGH);
-  
-  delay(1000);
 /*
+
+    delay(2000);
+
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, LOW);
+
+    delay(1000);
+
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+
+    delay(2000);
+
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+
+    delay(1000);
+
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+
+    delay(1000);
+
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, HIGH);
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, HIGH);
+    
+    delay(1000);
+
+
   if(distance < 10) {
     digitalWrite(in1, LOW);
     digitalWrite(in2, LOW);
