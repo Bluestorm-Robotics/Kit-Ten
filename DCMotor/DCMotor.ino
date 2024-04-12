@@ -16,11 +16,13 @@ bool on = false;
 /* Initialise with specific int time and gain values */
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
+//SFE_ISL29125 RGB_sensor;
+
 // defines pins numbers
 const int trigPin = 11;
 const int echoPin = 12;
-const int onPin = 13;
-const int offPin = 10;
+const int onPin = 52;
+const int offPin = 53;
 
 // defines variables
 long duration;
@@ -55,10 +57,20 @@ void setup() {
 
   pinMode(onPin, INPUT);
   pinMode(offPin, INPUT);
-  
+
+/*
+  if (RGB_sensor.init())
+  {
+    Serial.println("Sensor Initialization Successful\n\r");
+  }
+  */
+
 }
 
 void loop() {  
+
+  
+
   uint16_t r, g, b, c, colorTemp, lux;
 
   tcs.getRawData(&r, &g, &b, &c);
@@ -89,14 +101,15 @@ void loop() {
   Serial.print("Distance: ");
   Serial.println(distance);
 
-  Serial.println(digitalRead(onPin) + " " + digitalRead(offPin));
-
-  if(digitalRead(onPin) == 0) {
+  if(digitalRead(onPin) == HIGH) {
     on = true;
+    Serial.println("On");
   }
-  if(digitalRead(offPin) == 0) {
+  if(digitalRead(offPin) == HIGH) {
     on = false;
+    Serial.println("Off");
   }
+
 
   if(on) {
     analogWrite(enA, 75);
@@ -104,6 +117,12 @@ void loop() {
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
     digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+  }
+  else {
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, LOW);
+    digitalWrite(in3, LOW);
     digitalWrite(in4, LOW);
   }
 
