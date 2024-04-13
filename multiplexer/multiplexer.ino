@@ -10,6 +10,7 @@
 
 #define TCAADDR 0x70
 
+SFE_ISL29125 RGB_sensor0;
 SFE_ISL29125 RGB_sensor1;
 SFE_ISL29125 RGB_sensor2;
 
@@ -32,6 +33,10 @@ void setup()
     
     Serial.begin(115200);
 
+    tcaselect(0);
+    if (RGB_sensor0.init()) {
+      Serial.println("Sensor 0 Initialization Successful\n\r");
+    }
     tcaselect(1);
     if (RGB_sensor1.init()) {
       Serial.println("Sensor 1 Initialization Successful\n\r");
@@ -63,6 +68,19 @@ void setup()
 }
 
 void loop() {
+  tcaselect(0);
+  Serial.println("Sensor 0:");
+  // Read sensor values (16 bit integers)
+  unsigned int red0 = RGB_sensor0.readRed();
+  unsigned int green0 = RGB_sensor0.readGreen();
+  unsigned int blue0 = RGB_sensor0.readBlue();
+  
+  // Print out readings, change HEX to DEC if you prefer decimal output
+  Serial.print("Red: "); Serial.println(red0,HEX);
+  Serial.print("Green: "); Serial.println(green0,HEX);
+  Serial.print("Blue: "); Serial.println(blue0,HEX);
+  Serial.println();
+
   tcaselect(1);
   Serial.println("Sensor 1:");
   // Read sensor values (16 bit integers)
