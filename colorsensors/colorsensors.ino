@@ -26,9 +26,18 @@ Distributed as-is; no warranty is given.
 #include <Wire.h>
 #include "SparkFunISL29125.h"
 
+// SFE_ISL29125 RGB_sensor;
+// SFE_ISL29125 RGB_sensor2;
+
 // Declare sensor object
-SFE_ISL29125 RGB_sensor;
-SFE_ISL29125 RGB_sensor2;
+static int SDA1 = 1;
+static int SCL1 = 2;
+ISL29125_SOFT RGB_sensor;
+
+static int SDA2 = 3;
+static int SCL2 = 4;
+ISL29125_SOFT RGB_sensor2;
+
 
 void setup()
 {
@@ -36,10 +45,10 @@ void setup()
   Serial.begin(115200);
 
   // Initialize the ISL29125 with simple configuration so it starts sampling
-  if (RGB_sensor.init())
+  if (RGB_sensor.init(SDA,SCL))
   {
     Serial.println("Sensor 1 Initialization Successful\n\r");
-    if(RGB_sensor2.init(20,21)) {
+    if(RGB_sensor2.init(SDA2,SCL2)) {
       Serial.println("Sensor 2 Initialization Successful\n\r");
     }
   }
