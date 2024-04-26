@@ -1,12 +1,83 @@
-/**
- * TCA9548 I2CScanner.ino -- I2C bus scanner for Arduino
- *
- * Based on https://playground.arduino.cc/Main/I2cScanner/
- *
- */
 
 #include "Wire.h"
 #include "SparkFunISL29125.h"
+
+#include <stdint.h>
+
+
+#include <AccelStepper.h>
+#include <Adafruit_MotorShield.h>
+
+Adafruit_MotorShield AFMSbot(0x60); // bottom
+Adafruit_MotorShield AFMSmid(0x61); // middle
+Adafruit_MotorShield AFMStop(0x62); // top
+
+// Connect two steppers with 200 steps per revolution (1.8 degree)
+// to the top shield
+Adafruit_StepperMotor *myStepper1 = AFMStop.getStepper(200, 1);
+Adafruit_StepperMotor *myStepper2 = AFMStop.getStepper(200, 2);
+
+// Connect two steppers with 200 steps per revolution (1.8 degree)
+// to the middle shield
+Adafruit_StepperMotor *myStepper3 = AFMSmid.getStepper(200, 1);
+Adafruit_StepperMotor *myStepper4 = AFMSmid.getStepper(200, 2);
+
+// Connect two steppers with 200 steps per revolution (1.8 degree)
+// to the bottom shield
+Adafruit_StepperMotor *myStepper5 = AFMSbot.getStepper(200, 1);
+Adafruit_StepperMotor *myStepper6 = AFMSbot.getStepper(200, 2);
+
+// you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
+// wrappers for the first motor!
+void forwardstep1() {
+  myStepper1->onestep(FORWARD, SINGLE);
+}
+void backwardstep1() {
+  myStepper1->onestep(BACKWARD, SINGLE);
+}
+// wrappers for the second motor!
+void forwardstep2() {
+  myStepper2->onestep(FORWARD, DOUBLE);
+}
+void backwardstep2() {
+  myStepper2->onestep(BACKWARD, DOUBLE);
+}
+// wrappers for the third motor!
+void forwardstep3() {
+  myStepper3->onestep(FORWARD, INTERLEAVE);
+}
+void backwardstep3() {
+  myStepper3->onestep(BACKWARD, INTERLEAVE);
+}
+// wrappers for the fourth motor!
+void forwardstep4() {
+  myStepper4->onestep(FORWARD, SINGLE);
+}
+void backwardstep4() {
+  myStepper4->onestep(BACKWARD, SINGLE);
+}
+// wrappers for the fifth motor!
+void forwardstep5() {
+  myStepper5->onestep(FORWARD, DOUBLE);
+}
+void backwardstep5() {
+  myStepper5->onestep(BACKWARD, DOUBLE);
+}
+// wrappers for the sixth motor!
+void forwardstep6() {
+  myStepper6->onestep(FORWARD, INTERLEAVE);
+}
+void backwardstep6() {
+  myStepper6->onestep(BACKWARD, INTERLEAVE);
+}
+
+// Now we'll wrap the 6 steppers in an AccelStepper object
+AccelStepper stepper1(forwardstep1, backwardstep1);
+AccelStepper stepper2(forwardstep2, backwardstep2);
+AccelStepper stepper3(forwardstep3, backwardstep3);
+AccelStepper stepper4(forwardstep4, backwardstep4);
+AccelStepper stepper5(forwardstep5, backwardstep5);
+AccelStepper stepper6(forwardstep6, backwardstep6);
 
 #define TCAADDR 0x70
 
@@ -90,6 +161,16 @@ void setup()
       }
     }
     Serial.println("\ndone");
+
+  if(AFMSbot.begin()) {
+    Serial.println("Bottom motor found!");
+  }
+  if(AFMSmid.begin()) {
+    Serial.println("Middle motor found!");
+  }
+  if(AFMStop.begin()) {
+    Serial.println("Top motor found!");
+  }
     
   delay(2000);
 }
