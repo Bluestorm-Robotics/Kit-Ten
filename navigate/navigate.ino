@@ -81,14 +81,7 @@ AccelStepper stepper6(forwardstep6, backwardstep6);
 
 #define TCAADDR 0x70
 
-SFE_ISL29125 RGB_sensor0;
-SFE_ISL29125 RGB_sensor1;
-SFE_ISL29125 RGB_sensor2;
-SFE_ISL29125 RGB_sensor3;
-SFE_ISL29125 RGB_sensor4;
-SFE_ISL29125 RGB_sensor5;
-SFE_ISL29125 RGB_sensor6;
-SFE_ISL29125 RGB_sensor7;
+SFE_ISL29125 RGB_sensors[8];
 
 unsigned int rgb[3][8];
 
@@ -111,37 +104,12 @@ void setup()
     
     Serial.begin(115200);
 
-    tcaselect(0);
-    if (RGB_sensor0.init()) {
-      Serial.println("Sensor 0 Initialization Successful\n\r");
-    }
-    tcaselect(1);
-    if (RGB_sensor1.init()) {
-      Serial.println("Sensor 1 Initialization Successful\n\r");
-    }
-    tcaselect(2);
-    if(RGB_sensor2.init()) {
-      Serial.println("Sensor 2 Initialization Successful\n\r");
-    }
-    tcaselect(3);
-    if(RGB_sensor3.init()) {
-      Serial.println("Sensor 3 Initialization Successful\n\r");
-    }
-    tcaselect(4);
-    if(RGB_sensor4.init()) {
-      Serial.println("Sensor 4 Initialization Successful\n\r");
-    }
-    tcaselect(5);
-    if(RGB_sensor5.init()) {
-      Serial.println("Sensor 5 Initialization Successful\n\r");
-    }
-    tcaselect(6);
-    if(RGB_sensor6.init()) {
-      Serial.println("Sensor 6 Initialization Successful\n\r");
-    }
-    tcaselect(7);
-    if(RGB_sensor7.init()) {
-      Serial.println("Sensor 7 Initialization Successful\n\r");
+    for(int i = 0; i < 8; i++) {
+      tcaselect(i);
+      if (RGB_sensors[i].init()) {
+        Serial.print("Sensor "); Serial.print(i); Serial.print(" Initialization Successful\n\r");
+        Serial.println();
+      }
     }
     
     Serial.println("\nTCAScanner ready!");
@@ -171,17 +139,72 @@ void setup()
   if(AFMStop.begin()) {
     Serial.println("Top motor found!");
   }
+
+  stepper1.setMaxSpeed(100.0);
+  stepper1.setAcceleration(100.0);
+  stepper1.moveTo(24);
+
+  stepper2.setMaxSpeed(200.0);
+  stepper2.setAcceleration(100.0);
+  stepper2.moveTo(50000);
+
+  stepper3.setMaxSpeed(300.0);
+  stepper3.setAcceleration(100.0);
+  stepper3.moveTo(1000000);
+
+  stepper4.setMaxSpeed(300.0);
+  stepper4.setAcceleration(100.0);
+  stepper4.moveTo(1000000);
+
+  stepper5.setMaxSpeed(300.0);
+  stepper5.setAcceleration(100.0);
+  stepper5.moveTo(1000000);
+
+  stepper6.setMaxSpeed(300.0);
+  stepper6.setAcceleration(100.0);
+  stepper6.moveTo(1000000);
     
   delay(2000);
 }
 
 void loop() {
+
+   if (stepper1.distanceToGo() == 0) {
+      stepper1.moveTo(-stepper1.currentPosition());
+    }
+
+    if (stepper2.distanceToGo() == 0) {
+      stepper2.moveTo(-stepper2.currentPosition());
+    }
+    if (stepper3.distanceToGo() == 0) {
+      stepper3.moveTo(-stepper3.currentPosition());
+    }
+
+  if (stepper4.distanceToGo() == 0) {
+    stepper4.moveTo(-stepper4.currentPosition());
+  }
+
+  if (stepper5.distanceToGo() == 0) {
+    stepper5.moveTo(-stepper5.currentPosition());
+  }
+
+  if (stepper6.distanceToGo() == 0) {
+    stepper6.moveTo(-stepper6.currentPosition());
+  }
+
+  stepper1.run();
+  stepper2.run();
+  stepper3.run();
+  stepper4.run();
+  stepper5.run();
+  stepper6.run();
+
   tcaselect(0);
   Serial.println("Sensor 0:");
   // Read sensor values (16 bit integers)
-  rgb[0][0] = RGB_sensor0.readRed();
-  rgb[1][0] = RGB_sensor0.readGreen();
-  rgb[2][0] = RGB_sensor0.readBlue();
+  rgb[0][0] = RGB_sensors[0].readRed();
+  rgb[1][0] = RGB_sensors[0].readGreen();
+  rgb[2][0] = RGB_sensors[0].readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
   Serial.print("Red: "); Serial.println(rgb[0][0],HEX);
   Serial.print("Green: "); Serial.println(rgb[1][0],HEX);
@@ -192,9 +215,9 @@ void loop() {
   tcaselect(1);
   Serial.println("Sensor 1:");
   // Read sensor values (16 bit integers)
-    rgb[0][1] = RGB_sensor1.readRed();
-  rgb[1][1] = RGB_sensor1.readGreen();
-  rgb[2][1] = RGB_sensor1.readBlue();
+    rgb[0][1] = RGB_sensors[1].readRed();
+  rgb[1][1] = RGB_sensors[1].readGreen();
+  rgb[2][1] = RGB_sensors[1].readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
   Serial.print("Red: "); Serial.println(rgb[0][1],HEX);
   Serial.print("Green: "); Serial.println(rgb[1][1],HEX);
@@ -205,9 +228,9 @@ void loop() {
   tcaselect(2);
   Serial.println("Sensor 2:");
   // Read sensor values (16 bit integers)
-  rgb[0][2] = RGB_sensor2.readRed();
-  rgb[1][2] = RGB_sensor2.readGreen();
-  rgb[2][2] = RGB_sensor2.readBlue();
+  rgb[0][2] = RGB_sensors[2].readRed();
+  rgb[1][2] = RGB_sensors[2].readGreen();
+  rgb[2][2] = RGB_sensors[2].readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
   Serial.print("Red: "); Serial.println(rgb[0][2],HEX);
   Serial.print("Green: "); Serial.println(rgb[1][2],HEX);
@@ -218,9 +241,9 @@ void loop() {
   tcaselect(3);
   Serial.println("Sensor 3:");
   // Read sensor values (16 bit integers)
-  rgb[0][3] = RGB_sensor3.readRed();
-  rgb[1][3] = RGB_sensor3.readGreen();
-  rgb[2][3] = RGB_sensor3.readBlue();
+  rgb[0][3] = RGB_sensors[3].readRed();
+  rgb[1][3] = RGB_sensors[3].readGreen();
+  rgb[2][3] = RGB_sensors[3].readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
   Serial.print("Red: "); Serial.println(rgb[0][3],HEX);
   Serial.print("Green: "); Serial.println(rgb[1][3],HEX);
@@ -231,9 +254,9 @@ void loop() {
   tcaselect(4);
   Serial.println("Sensor 4:");
   // Read sensor values (16 bit integers)
-  rgb[0][4] = RGB_sensor4.readRed();
-  rgb[1][4] = RGB_sensor4.readGreen();
-  rgb[2][4] = RGB_sensor4.readBlue();
+  rgb[0][4] = RGB_sensors[4].readRed();
+  rgb[1][4] = RGB_sensors[4].readGreen();
+  rgb[2][4] = RGB_sensors[4].readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
   Serial.print("Red: "); Serial.println(rgb[0][4],HEX);
   Serial.print("Green: "); Serial.println(rgb[1][4],HEX);
@@ -244,9 +267,9 @@ void loop() {
   tcaselect(5);
   Serial.println("Sensor 5:");
   // Read sensor values (16 bit integers)
-  rgb[0][5] = RGB_sensor5.readRed();
-  rgb[1][5] = RGB_sensor5.readGreen();
-  rgb[2][5] = RGB_sensor5.readBlue();
+  rgb[0][5] = RGB_sensors[5].readRed();
+  rgb[1][5] = RGB_sensors[5].readGreen();
+  rgb[2][5] = RGB_sensors[5].readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
   Serial.print("Red: "); Serial.println(rgb[0][5],HEX);
   Serial.print("Green: "); Serial.println(rgb[1][5],HEX);
@@ -257,9 +280,9 @@ void loop() {
   tcaselect(6);
   Serial.println("Sensor 6:");
   // Read sensor values (16 bit integers)
-  rgb[0][6] = RGB_sensor6.readRed();
-  rgb[1][6] = RGB_sensor6.readGreen();
-  rgb[2][6] = RGB_sensor6.readBlue();
+  rgb[0][6] = RGB_sensors[6].readRed();
+  rgb[1][6] = RGB_sensors[6].readGreen();
+  rgb[2][6] = RGB_sensors[6].readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
   Serial.print("Red: "); Serial.println(rgb[0][6],HEX);
   Serial.print("Green: "); Serial.println(rgb[1][6],HEX);
@@ -270,9 +293,9 @@ void loop() {
   tcaselect(7);
   Serial.println("Sensor 7:");
   // Read sensor values (17 bit integers)
-  rgb[0][7] = RGB_sensor7.readRed();
-  rgb[1][7] = RGB_sensor7.readGreen();
-  rgb[2][7] = RGB_sensor7.readBlue();
+  rgb[0][7] = RGB_sensors[7].readRed();
+  rgb[1][7] = RGB_sensors[7].readGreen();
+  rgb[2][7] = RGB_sensors[7].readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
   Serial.print("Red: "); Serial.println(rgb[0][7],HEX);
   Serial.print("Green: "); Serial.println(rgb[1][7],HEX);
