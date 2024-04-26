@@ -8,6 +8,13 @@
 // This tutorial is for Adafruit Motorshield v2 only!
 // Will not work with v1 shields
 
+#include "Arduino_LED_Matrix.h"
+
+#include <stdint.h>
+
+ArduinoLEDMatrix matrix;
+
+
 #include <AccelStepper.h>
 #include <Adafruit_MotorShield.h>
 
@@ -74,7 +81,7 @@ void backwardstep6() {
   myStepper6->onestep(BACKWARD, INTERLEAVE);
 }
 
-// Now we'll wrap the 3 steppers in an AccelStepper object
+// Now we'll wrap the 6 steppers in an AccelStepper object
 AccelStepper stepper1(forwardstep1, backwardstep1);
 AccelStepper stepper2(forwardstep2, backwardstep2);
 AccelStepper stepper3(forwardstep3, backwardstep3);
@@ -84,9 +91,22 @@ AccelStepper stepper6(forwardstep6, backwardstep6);
 
 void setup()
 {
-  AFMSbot.begin(); // Start the bottom shield
-  AFMSmid.begin(); // Start the middle shield
-  AFMStop.begin(); // Start the top shield
+  Serial.begin(9600);
+  Serial.println("Setup begun!");
+
+  if(AFMSbot.begin()) {
+    Serial.println("Bottom motor found!");
+  }
+  if(AFMSmid.begin()) {
+    Serial.println("Middle motor found!");
+  }
+  if(AFMStop.begin()) {
+    Serial.println("Top motor found!");
+  }
+
+   // Start the bottom shield
+   // Start the middle shield
+   // Start the top shield
 
   stepper1.setMaxSpeed(100.0);
   stepper1.setAcceleration(100.0);
@@ -111,34 +131,51 @@ void setup()
   stepper6.setMaxSpeed(300.0);
   stepper6.setAcceleration(100.0);
   stepper6.moveTo(1000000);
+
+  matrix.begin();
+
 }
 
 void loop()
 {
+  /*
+  matrix.setCursor(0,0);
+  matrix.setTextColor(matrix.color565(0, 255, 0)); 
+  matrix.print("Hello, world!");
+
+  matrix.drawLine(0, 0, 5, 5, matrix.color565(255,0,0));
+  matrix.drawLine(0, 5, 5, 0, matrix.color565(255,0,0));
+  */
+
     // Change direction at the limits
-    if (stepper1.distanceToGo() == 0)
-	stepper1.moveTo(-stepper1.currentPosition());
+    if (stepper1.distanceToGo() == 0) {
+      stepper1.moveTo(-stepper1.currentPosition());
+    }
 
-    if (stepper2.distanceToGo() == 0)
-	stepper2.moveTo(-stepper2.currentPosition());
+    if (stepper2.distanceToGo() == 0) {
+      stepper2.moveTo(-stepper2.currentPosition());
+    }
+    if (stepper3.distanceToGo() == 0) {
+      stepper3.moveTo(-stepper3.currentPosition());
+    }
 
-    if (stepper3.distanceToGo() == 0)
-	stepper3.moveTo(-stepper3.currentPosition());
+  if (stepper4.distanceToGo() == 0) {
+    stepper4.moveTo(-stepper4.currentPosition());
+  }
 
-  if (stepper4.distanceToGo() == 0)
-	stepper4.moveTo(-stepper4.currentPosition());
+  if (stepper5.distanceToGo() == 0) {
+    stepper5.moveTo(-stepper5.currentPosition());
+  }
 
-  if (stepper5.distanceToGo() == 0)
-	stepper5.moveTo(-stepper5.currentPosition());
+  if (stepper6.distanceToGo() == 0) {
+    stepper6.moveTo(-stepper6.currentPosition());
+  }
 
-  if (stepper6.distanceToGo() == 0)
-	stepper6.moveTo(-stepper6.currentPosition());
-
-    stepper1.run();
-    stepper2.run();
-    stepper3.run();
-    stepper4.run();
-    stepper5.run();
-    stepper6.run();
+  stepper1.run();
+  stepper2.run();
+  stepper3.run();
+  stepper4.run();
+  stepper5.run();
+  stepper6.run();
 }
 
