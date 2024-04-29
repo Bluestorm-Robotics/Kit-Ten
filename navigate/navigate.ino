@@ -8,6 +8,8 @@
 #include <AccelStepper.h>
 #include <Adafruit_MotorShield.h>
 
+int combination;
+
 Adafruit_MotorShield AFMSbot(0x60); // bottom
 Adafruit_MotorShield AFMSmid(0x61); // middle
 Adafruit_MotorShield AFMStop(0x62); // top
@@ -72,12 +74,12 @@ void backwardstep6() {
 }
 
 /*
+  frontScoop
+  backScoop
   leftFront
   rightFront
   leftBack
   rightBack
-  frontScoop
-  backScoop
   */
 AccelStepper frontScoop(forwardstep1, backwardstep1);
 AccelStepper backScoop(forwardstep2, backwardstep2);
@@ -89,6 +91,16 @@ AccelStepper rightBack(forwardstep6, backwardstep6);
 #define TCAADDR 0x70
 
 SFE_ISL29125 RGB_sensors[8];
+
+/*
+  Front - 4
+  Left Middle - 2
+  Right Middle - 6
+  Left Back - 5
+  Right Back - 7
+  PID Left - 1
+  PID Right - 0
+*/
 
 unsigned int rgb[3][8];
 
@@ -196,6 +208,62 @@ void scoop() {
   
 }
 
+bool isGreen(int sensor) {
+  if((rgb[1][sensor] > 200) && (rgb[0][sensor] < 50) && (rgb[2][sensor] < 50)) {
+    return true;
+  }
+  else return false;
+}
+
+bool isRed(int sensor) {
+  if((rgb[0][sensor] > 200) && (rgb[1][sensor] < 50) && (rgb[2][sensor] < 50)) {
+    return true;
+  }
+  else return false;
+}
+
+bool isWhite(int sensor) {
+  if((rgb[0][sensor] > 200) && (rgb[1][sensor] > 200) && (rgb[2][sensor] > 200)) {
+    return true;
+  }
+  else return false;
+}
+
+bool isBlack(int sensor) {
+  if((rgb[0][sensor] < 50) && (rgb[1][sensor] < 50) && (rgb[2][sensor] < 50)) {
+    return true;
+  }
+  else return false;
+}
+
+int checkValue(int sensor) {
+  if(isBlack(sensor)) {
+    return 0;
+  }
+  else if(isWhite(sensor)) {
+    return 1;
+  }
+  else if(isGreen(sensor)) {
+    return 2;
+  }
+  else if(isRed(sensor)) {
+    return 3;
+  }
+}
+
+int convertToInt() {
+  int values = checkValue(7);
+  values += checkValue(5) * 10;
+  values += checkValue(6) * 100;
+  values += checkValue(2) * 1000;
+  values += checkValue(4) * 10000;
+  return values;
+}
+
+void truth(int values) {
+  if()
+}
+
 void loop() {
 
   /*
@@ -241,6 +309,9 @@ void loop() {
     Serial.print("Blue: "); Serial.println(rgb[2][i],HEX);
     Serial.println();
   }
+
+  int navInt = convertToInt();
+
 
   delay(2000);
   

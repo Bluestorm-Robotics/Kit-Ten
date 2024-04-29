@@ -37,7 +37,7 @@ Adafruit_StepperMotor *myStepper4 = AFMSmid.getStepper(200, 2);
 Adafruit_StepperMotor *myStepper5 = AFMSbot.getStepper(200, 1);
 Adafruit_StepperMotor *myStepper6 = AFMSbot.getStepper(200, 2);
 
-// you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
+// you can change these to DOUBLE or SINGLE or MICROSTEP!
 // wrappers for the first motor!
 void forwardstep1() {
   myStepper1->onestep(FORWARD, SINGLE);
@@ -47,17 +47,17 @@ void backwardstep1() {
 }
 // wrappers for the second motor!
 void forwardstep2() {
-  myStepper2->onestep(FORWARD, DOUBLE);
+  myStepper2->onestep(FORWARD, SINGLE);
 }
 void backwardstep2() {
-  myStepper2->onestep(BACKWARD, DOUBLE);
+  myStepper2->onestep(BACKWARD, SINGLE);
 }
 // wrappers for the third motor!
 void forwardstep3() {
-  myStepper3->onestep(FORWARD, INTERLEAVE);
+  myStepper3->onestep(FORWARD, SINGLE);
 }
 void backwardstep3() {
-  myStepper3->onestep(BACKWARD, INTERLEAVE);
+  myStepper3->onestep(BACKWARD, SINGLE);
 }
 // wrappers for the fourth motor!
 void forwardstep4() {
@@ -68,17 +68,17 @@ void backwardstep4() {
 }
 // wrappers for the fifth motor!
 void forwardstep5() {
-  myStepper5->onestep(FORWARD, DOUBLE);
+  myStepper5->onestep(FORWARD, SINGLE);
 }
 void backwardstep5() {
-  myStepper5->onestep(BACKWARD, DOUBLE);
+  myStepper5->onestep(BACKWARD, SINGLE);
 }
 // wrappers for the sixth motor!
 void forwardstep6() {
-  myStepper6->onestep(FORWARD, INTERLEAVE);
+  myStepper6->onestep(FORWARD, SINGLE);
 }
 void backwardstep6() {
-  myStepper6->onestep(BACKWARD, INTERLEAVE);
+  myStepper6->onestep(BACKWARD, SINGLE);
 }
 
 // Now we'll wrap the 6 steppers in an AccelStepper object
@@ -108,13 +108,13 @@ void setup()
    // Start the middle shield
    // Start the top shield
 
-  stepper1.setMaxSpeed(100.0);
+  stepper1.setMaxSpeed(300.0);
   stepper1.setAcceleration(100.0);
-  stepper1.moveTo(24);
+  stepper1.moveTo(1000000);
 
-  stepper2.setMaxSpeed(200.0);
+  stepper2.setMaxSpeed(300.0);
   stepper2.setAcceleration(100.0);
-  stepper2.moveTo(50000);
+  stepper2.moveTo(1000000);
 
   stepper3.setMaxSpeed(300.0);
   stepper3.setAcceleration(100.0);
@@ -122,11 +122,11 @@ void setup()
 
   stepper4.setMaxSpeed(300.0);
   stepper4.setAcceleration(100.0);
-  stepper4.moveTo(1000000);
+  stepper4.moveTo(-1000000);
 
   stepper5.setMaxSpeed(300.0);
   stepper5.setAcceleration(100.0);
-  stepper5.moveTo(1000000);
+  stepper5.moveTo(-1000000);
 
   stepper6.setMaxSpeed(300.0);
   stepper6.setAcceleration(100.0);
