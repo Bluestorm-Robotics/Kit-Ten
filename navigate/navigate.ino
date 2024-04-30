@@ -9,6 +9,8 @@
 #include <Adafruit_MotorShield.h>
 
 int combination;
+int values[5];
+bool seesRed;
 
 Adafruit_MotorShield AFMSbot(0x60); // bottom
 Adafruit_MotorShield AFMSmid(0x61); // middle
@@ -116,6 +118,7 @@ void tcaselect(uint8_t i) {
 // standard Arduino setup()
 void setup()
 {
+  seesRed = false;
     while (!Serial);
     delay(1000);
 
@@ -218,6 +221,7 @@ bool isGreen(int sensor) {
 bool isRed(int sensor) {
   if((rgb[0][sensor] > 200) && (rgb[1][sensor] < 50) && (rgb[2][sensor] < 50)) {
     return true;
+    seesRed = true;
   }
   else return false;
 }
@@ -251,17 +255,180 @@ int checkValue(int sensor) {
   }
 }
 
-int convertToInt() {
-  int values = checkValue(7);
-  values += checkValue(5) * 10;
-  values += checkValue(6) * 100;
-  values += checkValue(2) * 1000;
-  values += checkValue(4) * 10000;
-  return values;
+void convertToInt() {
+  values[0] = checkValue(7);
+  values[1] = checkValue(5);
+  values[2] = checkValue(6);
+  values[3] = checkValue(2);
+  values[4] = checkValue(4);
 }
 
-void truth(int values) {
-  if()
+void truth() {
+  if(values[0] == 0) {
+    //front sensor reads black
+    if(values[1] == 0) {
+      //left mid reads black
+      if(values[2] == 0) {
+        //right mid reads black
+        if(values[3] == 1) {
+          //left rear reads white
+          if(values[4] == 2) {
+            //right rear reads green
+            // BBBWG
+            // Right turn
+          }
+        }
+        else if(values[3] == 2) {
+          //left rear reads green
+          if(values[4] == 1) {
+            //right rear reads white
+            // BBBGW
+            // Left turn
+          }
+          else if(values[4] == 2) {
+            //right rear reads green
+            // BBBGG
+            // U turn
+          }
+        }
+      }
+      else if(values[2] == 1) {
+        //right mid reads white
+        if(values[3] == 2) {
+          //left rear reads green
+          if(values[4] == 1) {
+            //right rear reads white
+            // BBWGW
+            // Left turn
+          }
+        }
+      }
+    }
+    else if(values[1] == 1) {
+      //left mid reads white
+      if(values[2] == 0) {
+        //right mid reads black
+        if(values[3] == 1) {
+          //left rear reads white
+          if(values[4] == 2) {
+            //right rear reads green
+            // BWBWG
+            // Right turn
+          }
+        }
+      }
+    }
+  }
+  else if(values[0] == 1) {
+    //front sensor reads white
+    if(values[1] == 0) {
+      //left mid reads black
+      if(values[2] == 0) {
+        //right mid reads black
+        if(values[3] == 1) {
+          //left rear reads white
+          if(values[4] == 1) {
+            //right rear reads white
+            // WBBWW
+            // Initialization
+          }
+          else if(values[4] == 2) {
+            //right rear reads green
+            // WBBWG
+            // Right turn
+          }
+        }
+        else if(values[3] == 2) {
+          //left rear reads green
+          if(values[4] == 1) {
+            //right rear reads white
+            // WBBGW
+            // Left turn
+          }
+          else if(values[4] == 2) {
+            //right rear reads green
+            // WBBGG
+            // U turn
+          }
+        }
+      }
+      else if(values[2] == 1) {
+        //right mid reads white
+        if(values[3] == 0) {
+          //left rear reads black
+          if(values[4] == 1) {
+            //right rear reads white
+            // WBWBW
+            // Shift left
+          }
+        }
+        else if(values[3] == 1) {
+          //left rear reads white
+          if(values[4] == 0) {
+            //right rear reads black
+            // WBWWB
+            // Turn left (~60 deg)
+          }
+          else if(values[4] == 1) {
+            //right rear reads white
+            // WBWWW
+            // Check rear sensor
+          }
+        }
+        else if(values[3] == 2) {
+          //left rear reads green
+          if(values[4] == 1) {
+            //right rear reads white
+            // WBWGW
+            // Left turn
+          }
+        }
+      }
+    }
+    else if(values[1] == 1) {
+      //left mid reads white
+      if(values[2] == 0) {
+        //right mid reads black
+        if(values[3] == 0) {
+          //left rear reads black
+          if(values[4] == 1) {
+            //right rear reads white
+            // WWBBW
+            // Turn right (60 deg)
+          }
+        }
+        else if(values[3] == 1) {
+          //left rear reads white
+          if(values[4] == 0) {
+            //right rear reads black
+            // WWBWB
+            // Shift right
+          }
+          else if(values[4] == 1) {
+            //right rear reads white
+            // WWBWW
+            // Check rear sensor
+          }
+          else if(values[4] == 2) {
+            //right rear reads green
+            // WWBWG
+            // Right turn
+          }
+        }
+      }
+      else if(values[2] == 1) {
+        //right mid reads white
+        if(values[3] == 1) {
+          //left rear reads white
+          if(values[4] == 1) {
+            //right rear reads white
+            // WWWWW
+            // Straight with a timer
+          }
+        }
+      }
+    }
+  }
 }
 
 void loop() {
@@ -310,9 +477,13 @@ void loop() {
     Serial.println();
   }
 
-  int navInt = convertToInt();
+  if(!seesRed) {
+    convertToInt();
 
 
-  delay(2000);
-  
+    delay(2000);
+  }
+  else {
+    stop();
+  }
 }

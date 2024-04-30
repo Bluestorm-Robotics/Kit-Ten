@@ -40,45 +40,45 @@ Adafruit_StepperMotor *myStepper6 = AFMSbot.getStepper(200, 2);
 // you can change these to DOUBLE or SINGLE or MICROSTEP!
 // wrappers for the first motor!
 void forwardstep1() {
-  myStepper1->onestep(FORWARD, SINGLE);
+  myStepper1->onestep(FORWARD, DOUBLE);
 }
 void backwardstep1() {
-  myStepper1->onestep(BACKWARD, SINGLE);
+  myStepper1->onestep(BACKWARD, DOUBLE);
 }
 // wrappers for the second motor!
 void forwardstep2() {
-  myStepper2->onestep(FORWARD, SINGLE);
+  myStepper2->onestep(FORWARD, DOUBLE);
 }
 void backwardstep2() {
-  myStepper2->onestep(BACKWARD, SINGLE);
+  myStepper2->onestep(BACKWARD, DOUBLE);
 }
 // wrappers for the third motor!
 void forwardstep3() {
-  myStepper3->onestep(FORWARD, SINGLE);
+  myStepper3->onestep(FORWARD, DOUBLE);
 }
 void backwardstep3() {
-  myStepper3->onestep(BACKWARD, SINGLE);
+  myStepper3->onestep(BACKWARD, DOUBLE);
 }
 // wrappers for the fourth motor!
 void forwardstep4() {
-  myStepper4->onestep(FORWARD, SINGLE);
+  myStepper4->onestep(FORWARD, DOUBLE);
 }
 void backwardstep4() {
-  myStepper4->onestep(BACKWARD, SINGLE);
+  myStepper4->onestep(BACKWARD, DOUBLE);
 }
 // wrappers for the fifth motor!
 void forwardstep5() {
-  myStepper5->onestep(FORWARD, SINGLE);
+  myStepper5->onestep(FORWARD, DOUBLE);
 }
 void backwardstep5() {
-  myStepper5->onestep(BACKWARD, SINGLE);
+  myStepper5->onestep(BACKWARD, DOUBLE);
 }
 // wrappers for the sixth motor!
 void forwardstep6() {
-  myStepper6->onestep(FORWARD, SINGLE);
+  myStepper6->onestep(FORWARD, DOUBLE);
 }
 void backwardstep6() {
-  myStepper6->onestep(BACKWARD, SINGLE);
+  myStepper6->onestep(BACKWARD, DOUBLE);
 }
 
 // Now we'll wrap the 6 steppers in an AccelStepper object
