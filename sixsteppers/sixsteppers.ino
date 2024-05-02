@@ -108,27 +108,28 @@ void setup()
    // Start the middle shield
    // Start the top shield
 
-  stepper1.setMaxSpeed(300.0);
+  stepper1.setMaxSpeed(10);
   stepper1.setAcceleration(100.0);
   stepper1.moveTo(1000000);
-
-  stepper2.setMaxSpeed(300.0);
+/*
+  stepper2.setMaxSpeed(10);
   stepper2.setAcceleration(100.0);
   stepper2.moveTo(1000000);
 
-  stepper3.setMaxSpeed(300.0);
+*/
+  stepper3.setMaxSpeed(10);
   stepper3.setAcceleration(100.0);
   stepper3.moveTo(1000000);
 
-  stepper4.setMaxSpeed(300.0);
+  stepper4.setMaxSpeed(10);
   stepper4.setAcceleration(100.0);
-  stepper4.moveTo(-1000000);
+  stepper4.moveTo(1000000);
 
-  stepper5.setMaxSpeed(300.0);
+  stepper5.setMaxSpeed(10);
   stepper5.setAcceleration(100.0);
-  stepper5.moveTo(-1000000);
+  stepper5.moveTo(1000000);
 
-  stepper6.setMaxSpeed(300.0);
+  stepper6.setMaxSpeed(10);
   stepper6.setAcceleration(100.0);
   stepper6.moveTo(1000000);
 
@@ -148,34 +149,33 @@ void loop()
   */
 
     // Change direction at the limits
-    if (stepper1.distanceToGo() == 0) {
-      stepper1.moveTo(-stepper1.currentPosition());
-    }
-
-    if (stepper2.distanceToGo() == 0) {
-      stepper2.moveTo(-stepper2.currentPosition());
-    }
-    if (stepper3.distanceToGo() == 0) {
-      stepper3.moveTo(-stepper3.currentPosition());
-    }
+  if (stepper1.distanceToGo() == 0) {
+    stepper1.setCurrentPosition(0);
+  }
+  if (stepper2.distanceToGo() == 0) {
+    stepper2.setCurrentPosition(0);
+  }
+  if (stepper3.distanceToGo() == 0) {
+    stepper3.setCurrentPosition(0);
+  }
 
   if (stepper4.distanceToGo() == 0) {
-    stepper4.moveTo(-stepper4.currentPosition());
+    stepper4.setCurrentPosition(0);
   }
 
   if (stepper5.distanceToGo() == 0) {
-    stepper5.moveTo(-stepper5.currentPosition());
+    stepper5.setCurrentPosition(0);
   }
 
   if (stepper6.distanceToGo() == 0) {
-    stepper6.moveTo(-stepper6.currentPosition());
+    stepper6.setCurrentPosition(0);
   }
 
   stepper1.run();
   stepper2.run();
-  stepper3.run();
+  //stepper3.run();
   stepper4.run();
-  stepper5.run();
+  //stepper5.run();
   stepper6.run();
 }
 
