@@ -267,7 +267,7 @@ void convertToInt() {
   values[4] = checkValue(4);
 }
 
-void truth() {
+void truth() { // 1984
   if(values[0] == 0) {
     //front sensor reads black
     if(values[1] == 0) {
