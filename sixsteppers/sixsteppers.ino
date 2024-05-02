@@ -18,6 +18,7 @@ ArduinoLEDMatrix matrix;
 #include <AccelStepper.h>
 #include <Adafruit_MotorShield.h>
 
+int maxSpeed = 10;
 Adafruit_MotorShield AFMSbot(0x60); // bottom
 Adafruit_MotorShield AFMSmid(0x61); // middle
 Adafruit_MotorShield AFMStop(0x62); // top
@@ -108,28 +109,28 @@ void setup()
    // Start the middle shield
    // Start the top shield
 
-  stepper1.setMaxSpeed(10);
+  stepper1.setMaxSpeed(maxSpeed);
   stepper1.setAcceleration(100.0);
   stepper1.moveTo(1000000);
 /*
-  stepper2.setMaxSpeed(10);
+  stepper2.setMaxSpeed(maxSpeed);
   stepper2.setAcceleration(100.0);
   stepper2.moveTo(1000000);
 
 */
-  stepper3.setMaxSpeed(10);
+  stepper3.setMaxSpeed(maxSpeed);
   stepper3.setAcceleration(100.0);
   stepper3.moveTo(-1000000);
 
-  stepper4.setMaxSpeed(10);
+  stepper4.setMaxSpeed(maxSpeed);
   stepper4.setAcceleration(100.0);
   stepper4.moveTo(-1000000);
 
-  stepper5.setMaxSpeed(10);
+  stepper5.setMaxSpeed(maxSpeed);
   stepper5.setAcceleration(100.0);
   stepper5.moveTo(1000000);
 
-  stepper6.setMaxSpeed(10);
+  stepper6.setMaxSpeed(maxSpeed);
   stepper6.setAcceleration(100.0);
   stepper6.moveTo(1000000);
 
