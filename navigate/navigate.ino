@@ -195,14 +195,18 @@ void setup()
 // so each step is .06 inches aka 1.6mm * .07 = 1.1mm forward per step
 
 void moveForward(int steps, int speed) {
-  leftFront.setSpeed(speed);
-  leftFront.moveTo(steps);
-  rightFront.setSpeed(speed);
+  leftFront.setMaxSpeed(speed);
+  leftFront.setAcceleration(100.0);
+  leftFront.moveTo(-steps);
+  rightFront.setMaxSpeed(speed);
+  rightFront.setAcceleration(100.0);
   rightFront.moveTo(steps);
-  leftBack.setSpeed(speed);
+  leftBack.setMaxSpeed(speed);
+  leftBack.setAcceleration(100.0);
   leftBack.moveTo(-steps);
-  rightBack.setSpeed(speed);
-  rightBack.moveTo(-steps);
+  rightBack.setSpeedsetMaxSpeed(speed);
+  rightBack.setAcceleration(100.0);
+  rightBack.moveTo(steps);
 }
 
 void scoop() {
@@ -476,6 +480,7 @@ void loop() {
     Serial.print("Blue: "); Serial.println(rgb[2][i],HEX);
     Serial.println();
   }
+  /*
 
   if(!seesRed) {
     convertToInt();
@@ -484,6 +489,8 @@ void loop() {
     delay(2000);
   }
   else {
-    stop();
   }
+  */
+
+  delay(2000);
 }

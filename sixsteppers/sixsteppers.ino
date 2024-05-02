@@ -119,11 +119,11 @@ void setup()
 */
   stepper3.setMaxSpeed(10);
   stepper3.setAcceleration(100.0);
-  stepper3.moveTo(1000000);
+  stepper3.moveTo(-1000000);
 
   stepper4.setMaxSpeed(10);
   stepper4.setAcceleration(100.0);
-  stepper4.moveTo(1000000);
+  stepper4.moveTo(-1000000);
 
   stepper5.setMaxSpeed(10);
   stepper5.setAcceleration(100.0);
@@ -173,9 +173,9 @@ void loop()
 
   stepper1.run();
   stepper2.run();
-  //stepper3.run();
+  stepper3.run();
   stepper4.run();
-  //stepper5.run();
+  stepper5.run();
   stepper6.run();
 }
 
