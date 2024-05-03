@@ -18,7 +18,9 @@ ArduinoLEDMatrix matrix;
 #include <AccelStepper.h>
 #include <Adafruit_MotorShield.h>
 
-int maxSpeed = 10;
+int maxSpeed = 200;
+int maxAcc = 50;
+
 Adafruit_MotorShield AFMSbot(0x60); // bottom
 Adafruit_MotorShield AFMSmid(0x61); // middle
 Adafruit_MotorShield AFMStop(0x62); // top
@@ -110,28 +112,28 @@ void setup()
    // Start the top shield
 
   stepper1.setMaxSpeed(maxSpeed);
-  stepper1.setAcceleration(100.0);
+  stepper1.setAcceleration(maxAcc);
   stepper1.moveTo(1000000);
 /*
   stepper2.setMaxSpeed(maxSpeed);
-  stepper2.setAcceleration(100.0);
+  stepper2.setAcceleration(maxAcc);
   stepper2.moveTo(1000000);
 
 */
   stepper3.setMaxSpeed(maxSpeed);
-  stepper3.setAcceleration(100.0);
+  stepper3.setAcceleration(maxAcc);
   stepper3.moveTo(-1000000);
 
   stepper4.setMaxSpeed(maxSpeed);
-  stepper4.setAcceleration(100.0);
+  stepper4.setAcceleration(maxAcc);
   stepper4.moveTo(-1000000);
 
   stepper5.setMaxSpeed(maxSpeed);
-  stepper5.setAcceleration(100.0);
+  stepper5.setAcceleration(maxAcc);
   stepper5.moveTo(1000000);
 
   stepper6.setMaxSpeed(maxSpeed);
-  stepper6.setAcceleration(100.0);
+  stepper6.setAcceleration(maxAcc);
   stepper6.moveTo(1000000);
 
   matrix.begin();
@@ -152,28 +154,34 @@ void loop()
     // Change direction at the limits
   if (stepper1.distanceToGo() == 0) {
     stepper1.setCurrentPosition(0);
+    stepper1.moveTo(1000000);
   }
   if (stepper2.distanceToGo() == 0) {
     stepper2.setCurrentPosition(0);
+    stepper2.moveTo(1000000);
   }
   if (stepper3.distanceToGo() == 0) {
     stepper3.setCurrentPosition(0);
+    stepper3.moveTo(1000000);
   }
 
   if (stepper4.distanceToGo() == 0) {
     stepper4.setCurrentPosition(0);
+    stepper4.moveTo(1000000);
   }
 
   if (stepper5.distanceToGo() == 0) {
     stepper5.setCurrentPosition(0);
+    stepper5.moveTo(-1000000);
   }
 
   if (stepper6.distanceToGo() == 0) {
     stepper6.setCurrentPosition(0);
+    stepper6.moveTo(-1000000);
   }
 
-  stepper1.run();
-  stepper2.run();
+  //stepper1.run();
+  //stepper2.run();
   stepper3.run();
   stepper4.run();
   stepper5.run();
