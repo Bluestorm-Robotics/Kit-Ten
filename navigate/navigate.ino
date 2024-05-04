@@ -204,7 +204,7 @@ void moveForward(int steps, int speed) {
   leftBack.setMaxSpeed(speed);
   leftBack.setAcceleration(100.0);
   leftBack.moveTo(-steps);
-  rightBack.setSpeedsetMaxSpeed(speed);
+  rightBack.setMaxSpeed(speed);
   rightBack.setAcceleration(100.0);
   rightBack.moveTo(steps);
 }
@@ -216,14 +216,14 @@ void scoop() {
 }
 
 bool isGreen(int sensor) {
-  if((rgb[1][sensor] > 200) && (rgb[0][sensor] < 50) && (rgb[2][sensor] < 50)) {
+  if((rgb[0][sensor] < 15000) && (rgb[1][sensor] > 20000) && (rgb[2][sensor] < 15000)) {
     return true;
   }
   else return false;
 }
 
 bool isRed(int sensor) {
-  if((rgb[0][sensor] > 200) && (rgb[1][sensor] < 50) && (rgb[2][sensor] < 50)) {
+  if((rgb[0][sensor] > 15000) && (rgb[1][sensor] < 15000) && (rgb[2][sensor] < 7000)) {
     return true;
     seesRed = true;
   }
@@ -231,14 +231,14 @@ bool isRed(int sensor) {
 }
 
 bool isWhite(int sensor) {
-  if((rgb[0][sensor] > 200) && (rgb[1][sensor] > 200) && (rgb[2][sensor] > 200)) {
+  if((rgb[0][sensor] > 40000) && (rgb[1][sensor] > 40000) && (rgb[2][sensor] > 30000)) {
     return true;
   }
   else return false;
 }
 
 bool isBlack(int sensor) {
-  if((rgb[0][sensor] < 50) && (rgb[1][sensor] < 50) && (rgb[2][sensor] < 50)) {
+  if((rgb[0][sensor] < 500) && (rgb[1][sensor] < 600) && (rgb[2][sensor] < 350)) {
     return true;
   }
   else return false;
@@ -435,6 +435,10 @@ void truth() { // 1984
   }
 }
 
+void PID() {
+  
+}
+
 void loop() {
 
   /*
@@ -475,9 +479,9 @@ void loop() {
     rgb[0][i] = RGB_sensors[i].readRed();
     rgb[1][i] = RGB_sensors[i].readGreen();
     rgb[2][i] = RGB_sensors[i].readBlue();
-    Serial.print("Red: "); Serial.println(rgb[0][i],HEX);
-    Serial.print("Green: "); Serial.println(rgb[1][i],HEX);
-    Serial.print("Blue: "); Serial.println(rgb[2][i],HEX);
+    Serial.print("Red: "); Serial.println(rgb[0][i],DEC);
+    Serial.print("Green: "); Serial.println(rgb[1][i],DEC);
+    Serial.print("Blue: "); Serial.println(rgb[2][i],DEC);
     Serial.println();
   }
   /*

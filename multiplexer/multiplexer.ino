@@ -102,12 +102,12 @@ void loop() {
   rgb[1][0] = RGB_sensor0.readGreen();
   rgb[2][0] = RGB_sensor0.readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
-  Serial.print("Red: "); Serial.println(rgb[0][0],HEX);
-  Serial.print("Green: "); Serial.println(rgb[1][0],HEX);
-  Serial.print("Blue: "); Serial.println(rgb[2][0],HEX);
+  Serial.print("Red: "); Serial.println(rgb[0][0],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][0],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][0],DEC);
   Serial.println();
 
-
+  /*
   tcaselect(1);
   Serial.println("Sensor 1:");
   // Read sensor values (16 bit integers)
@@ -197,6 +197,7 @@ void loop() {
   Serial.print("Green: "); Serial.println(rgb[1][7],HEX);
   Serial.print("Blue: "); Serial.println(rgb[2][7],HEX);
   Serial.println();
+  */
 
   delay(2000);
   
