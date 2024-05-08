@@ -14,7 +14,7 @@ const int dirAPin = 13; //A.DIR
 
 const int stepsPerRev=200;
 int pulseWidthMicros = 20; 	// microseconds
-int millisBtwnSteps = 30000; // ~30 rpm
+int millisBtwnSteps = 10000; // ~30 rpm
 
 void setup() {
  	Serial.begin(9600);
