@@ -14,7 +14,7 @@ const int dirAPin = 13; //A.DIR
 
 const int stepsPerRev=200;
 int pulseWidthMicros = 20; 	// microseconds
-int millisBtwnSteps = 10000; // ~30 rpm
+int millisBtwnSteps = 2500; // ~30 rpm
 
 void setup() {
  	Serial.begin(9600);
@@ -39,39 +39,43 @@ void loop() {
   digitalWrite(dirAPin, LOW); // Enables the motor to move in a particular direction
  	// Makes 200 pulses for making one full cycle rotation
  	for (int i = 0; i < stepsPerRev; i++) {
+
+    /*
+    digitalWrite(stepXPin, HIGH);
+    digitalWrite(stepYPin, HIGH);
+    digitalWrite(stepZPin, HIGH);
+    digitalWrite(stepAPin, HIGH);
+ 		delayMicroseconds(pulseWidthMicros);
+ 		digitalWrite(stepXPin, LOW);
+    digitalWrite(stepYPin, LOW);
+    digitalWrite(stepZPin, LOW);
+    digitalWrite(stepAPin, LOW);
+		delayMicroseconds(millisBtwnSteps);
+    */
+      
+    
  			digitalWrite(stepXPin, HIGH);
  			delayMicroseconds(pulseWidthMicros);
  			digitalWrite(stepXPin, LOW);
  			delayMicroseconds(millisBtwnSteps);
-
-      digitalWrite(stepYPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepYPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
+      
       
       digitalWrite(stepZPin, HIGH);
  			delayMicroseconds(pulseWidthMicros);
  			digitalWrite(stepZPin, LOW);
  			delayMicroseconds(millisBtwnSteps);
+      
 
+      digitalWrite(stepYPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepYPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+
+      
       digitalWrite(stepAPin, HIGH);
  			delayMicroseconds(pulseWidthMicros);
  			digitalWrite(stepAPin, LOW);
  			delayMicroseconds(millisBtwnSteps);
+      
  	}
-  
-  /*
- 	delay(1000); // One second delay
- 	Serial.println(F("Running counter-clockwise"));
- 	digitalWrite(dirPin, LOW); //Changes the rotations direction
- 	// Makes 400 pulses for making two full cycle rotation
- 	for (int i =
-   0; i < 2*stepsPerRev; i++) {
- 			digitalWrite(stepPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
- 	}
- 	delay(1000);
-  */
 }
