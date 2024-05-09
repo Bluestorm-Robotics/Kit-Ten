@@ -40,14 +40,23 @@ void loop() {
  	// Makes 200 pulses for making one full cycle rotation
  	for (int i = 0; i < stepsPerRev; i++) {
  			digitalWrite(stepXPin, HIGH);
-      digitalWrite(stepYPin, HIGH);
-      digitalWrite(stepZPin, HIGH);
-      digitalWrite(stepAPin, HIGH);
  			delayMicroseconds(pulseWidthMicros);
  			digitalWrite(stepXPin, LOW);
-      digitalWrite(stepYPin, LOW);
-      digitalWrite(stepZPin, LOW);
-      digitalWrite(stepAPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+
+      digitalWrite(stepYPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepYPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+      
+      digitalWrite(stepZPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepZPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+
+      digitalWrite(stepAPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepAPin, LOW);
  			delayMicroseconds(millisBtwnSteps);
  	}
   

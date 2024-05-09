@@ -377,6 +377,11 @@ void loop() {
     delay(2000);
   }
   else {
+    digitalWrite(stepXPin, LOW);
+    digitalWrite(stepYPin, LOW);
+    digitalWrite(stepZPin, LOW);
+    digitalWrite(stepAPin, LOW);
+    Serial.println("End.");
   }
   */
 
