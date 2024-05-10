@@ -85,7 +85,7 @@ void setup()
 
         Wire.beginTransmission(addr);
         if (!Wire.endTransmission()) {
-          Serial.print("Found I2C 0x");  Serial.println(addr,HEX);
+          Serial.print("Found I2C 0x");  Serial.println(addr,DEC);
         }
       }
     }
@@ -107,7 +107,7 @@ void loop() {
   Serial.print("Blue: "); Serial.println(rgb[2][0],DEC);
   Serial.println();
 
-  /*
+  
   tcaselect(1);
   Serial.println("Sensor 1:");
   // Read sensor values (16 bit integers)
@@ -115,9 +115,9 @@ void loop() {
   rgb[1][1] = RGB_sensor1.readGreen();
   rgb[2][1] = RGB_sensor1.readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
-  Serial.print("Red: "); Serial.println(rgb[0][1],HEX);
-  Serial.print("Green: "); Serial.println(rgb[1][1],HEX);
-  Serial.print("Blue: "); Serial.println(rgb[2][1],HEX);
+  Serial.print("Red: "); Serial.println(rgb[0][1],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][1],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][1],DEC);
   Serial.println();
 
 
@@ -128,9 +128,9 @@ void loop() {
   rgb[1][2] = RGB_sensor2.readGreen();
   rgb[2][2] = RGB_sensor2.readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
-  Serial.print("Red: "); Serial.println(rgb[0][2],HEX);
-  Serial.print("Green: "); Serial.println(rgb[1][2],HEX);
-  Serial.print("Blue: "); Serial.println(rgb[2][2],HEX);
+  Serial.print("Red: "); Serial.println(rgb[0][2],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][2],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][2],DEC);
   Serial.println();
 
 
@@ -141,9 +141,9 @@ void loop() {
   rgb[1][3] = RGB_sensor3.readGreen();
   rgb[2][3] = RGB_sensor3.readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
-  Serial.print("Red: "); Serial.println(rgb[0][3],HEX);
-  Serial.print("Green: "); Serial.println(rgb[1][3],HEX);
-  Serial.print("Blue: "); Serial.println(rgb[2][3],HEX);
+  Serial.print("Red: "); Serial.println(rgb[0][3],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][3],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][3],DEC);
   Serial.println();
 
 
@@ -154,9 +154,9 @@ void loop() {
   rgb[1][4] = RGB_sensor4.readGreen();
   rgb[2][4] = RGB_sensor4.readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
-  Serial.print("Red: "); Serial.println(rgb[0][4],HEX);
-  Serial.print("Green: "); Serial.println(rgb[1][4],HEX);
-  Serial.print("Blue: "); Serial.println(rgb[2][4],HEX);
+  Serial.print("Red: "); Serial.println(rgb[0][4],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][4],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][4],DEC);
   Serial.println();
 
 
@@ -167,9 +167,9 @@ void loop() {
   rgb[1][5] = RGB_sensor5.readGreen();
   rgb[2][5] = RGB_sensor5.readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
-  Serial.print("Red: "); Serial.println(rgb[0][5],HEX);
-  Serial.print("Green: "); Serial.println(rgb[1][5],HEX);
-  Serial.print("Blue: "); Serial.println(rgb[2][5],HEX);
+  Serial.print("Red: "); Serial.println(rgb[0][5],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][5],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][5],DEC);
   Serial.println();
 
 
@@ -180,9 +180,9 @@ void loop() {
   rgb[1][6] = RGB_sensor6.readGreen();
   rgb[2][6] = RGB_sensor6.readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
-  Serial.print("Red: "); Serial.println(rgb[0][6],HEX);
-  Serial.print("Green: "); Serial.println(rgb[1][6],HEX);
-  Serial.print("Blue: "); Serial.println(rgb[2][6],HEX);
+  Serial.print("Red: "); Serial.println(rgb[0][6],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][6],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][6],DEC);
   Serial.println();
 
 
@@ -193,11 +193,11 @@ void loop() {
   rgb[1][7] = RGB_sensor7.readGreen();
   rgb[2][7] = RGB_sensor7.readBlue();
     // Print out readings, change HEX to DEC if you prefer decimal output
-  Serial.print("Red: "); Serial.println(rgb[0][7],HEX);
-  Serial.print("Green: "); Serial.println(rgb[1][7],HEX);
-  Serial.print("Blue: "); Serial.println(rgb[2][7],HEX);
+  Serial.print("Red: "); Serial.println(rgb[0][7],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][7],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][7],DEC);
   Serial.println();
-  */
+  
 
   delay(2000);
   

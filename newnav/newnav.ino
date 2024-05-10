@@ -19,18 +19,15 @@ bool seesRed;
 
 SFE_ISL29125 RGB_sensors[8];
 
-/*
-  Front - 4
-  Left Middle - 2
-  Right Middle - 6
-  Left Back - 5
-  Right Back - 7
-  PID Left - 1
-  PID Right - 0
-*/
+const int front = 4;
+const int leftMid = 2;
+const int rightMid = 6;
+const int leftBack = 5;
+const int rightBack = 7;
+const int leftPID = 1;
+const int rightPID = 0;
 
 unsigned int rgb[3][8];
-
 const int enPin=8;
 // front left
 const int stepXPin = 2; //X.STEP
@@ -47,7 +44,7 @@ const int dirAPin = 13; //A.DIR
 
 const int stepsPerRev=200;
 int pulseWidthMicros = 20; 	// microseconds
-int millisBtwnSteps = 10000; // ~30 rpm
+int millisBtwnSteps = 2500; // ~30 rpm
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
@@ -120,14 +117,26 @@ void moveForward(int steps) {
  	// Makes 200 pulses for making one full cycle rotation
  	for (int i = 0; i < steps; i++) {
  			digitalWrite(stepXPin, HIGH);
-      digitalWrite(stepYPin, HIGH);
-      digitalWrite(stepZPin, HIGH);
-      digitalWrite(stepAPin, HIGH);
  			delayMicroseconds(pulseWidthMicros);
  			digitalWrite(stepXPin, LOW);
-      digitalWrite(stepYPin, LOW);
-      digitalWrite(stepZPin, LOW);
-      digitalWrite(stepAPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+      
+      
+      digitalWrite(stepZPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepZPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+      
+
+      digitalWrite(stepYPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepYPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+
+      
+      digitalWrite(stepAPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepAPin, LOW);
  			delayMicroseconds(millisBtwnSteps);
  	}
 }
@@ -140,14 +149,26 @@ void moveBackward(int steps) {
  	// Makes 200 pulses for making one full cycle rotation
  	for (int i = 0; i < steps; i++) {
  			digitalWrite(stepXPin, HIGH);
-      digitalWrite(stepYPin, HIGH);
-      digitalWrite(stepZPin, HIGH);
-      digitalWrite(stepAPin, HIGH);
  			delayMicroseconds(pulseWidthMicros);
  			digitalWrite(stepXPin, LOW);
-      digitalWrite(stepYPin, LOW);
-      digitalWrite(stepZPin, LOW);
-      digitalWrite(stepAPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+      
+      
+      digitalWrite(stepZPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepZPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+      
+
+      digitalWrite(stepYPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepYPin, LOW);
+ 			delayMicroseconds(millisBtwnSteps);
+
+      
+      digitalWrite(stepAPin, HIGH);
+ 			delayMicroseconds(pulseWidthMicros);
+ 			digitalWrite(stepAPin, LOW);
  			delayMicroseconds(millisBtwnSteps);
  	}
 }
@@ -183,7 +204,7 @@ bool isWhite(int sensor) {
 }
 
 bool isBlack(int sensor) {
-  if((rgb[0][sensor] < 500) && (rgb[1][sensor] < 600) && (rgb[2][sensor] < 350)) {
+  if((rgb[0][sensor] < 1000) && (rgb[1][sensor] < 1000) && (rgb[2][sensor] < 500)) {
     return true;
   }
   else return false;
@@ -205,11 +226,11 @@ int checkValue(int sensor) {
 }
 
 void convertToInt() {
-  values[0] = checkValue(7);
-  values[1] = checkValue(5);
-  values[2] = checkValue(6);
-  values[3] = checkValue(2);
-  values[4] = checkValue(4);
+  values[0] = checkValue(rightBack);
+  values[1] = checkValue(leftBack);
+  values[2] = checkValue(rightMid);
+  values[3] = checkValue(leftMid);
+  values[4] = checkValue(front);
 }
 
 void truth() { // 1984
@@ -361,24 +382,131 @@ void truth() { // 1984
 }
 
 void linefollowing() {
-  if(isBlack(4)) {
-    
+  digitalWrite(dirXPin, HIGH);
+  digitalWrite(dirYPin, LOW);
+  digitalWrite(dirZPin, HIGH);
+  digitalWrite(dirAPin, LOW);
+  if(isBlack(front)) {
+    for(int i = 0; i < 5; i++) {
+      digitalWrite(stepXPin, HIGH);
+      delayMicroseconds(pulseWidthMicros);
+      digitalWrite(stepXPin, LOW);
+      delayMicroseconds(millisBtwnSteps);
+        
+      digitalWrite(stepZPin, HIGH);
+      delayMicroseconds(pulseWidthMicros);
+      digitalWrite(stepZPin, LOW);
+      delayMicroseconds(millisBtwnSteps);
+    }
+    for(int i = 0; i < 5; i++) {
+      digitalWrite(stepYPin, HIGH);
+      delayMicroseconds(pulseWidthMicros);
+      digitalWrite(stepYPin, LOW);
+      delayMicroseconds(millisBtwnSteps);
+
+      digitalWrite(stepAPin, HIGH);
+      delayMicroseconds(pulseWidthMicros);
+      digitalWrite(stepAPin, LOW);
+      delayMicroseconds(millisBtwnSteps);
+    }
   }
+  else if(isWhite(front)) {
+    if(isBlack(leftPID) && isWhite(rightPID)) {
+      digitalWrite(stepXPin, HIGH);
+      delayMicroseconds(pulseWidthMicros);
+      digitalWrite(stepXPin, LOW);
+      delayMicroseconds(millisBtwnSteps);
+        
+      digitalWrite(stepZPin, HIGH);
+      delayMicroseconds(pulseWidthMicros);
+      digitalWrite(stepZPin, LOW);
+      delayMicroseconds(millisBtwnSteps);
+    }
+    else if(isWhite(leftPID) && isBlack(rightPID)) {
+      digitalWrite(stepYPin, HIGH);
+      delayMicroseconds(pulseWidthMicros);
+      digitalWrite(stepYPin, LOW);
+      delayMicroseconds(millisBtwnSteps);
+
+      digitalWrite(stepAPin, HIGH);
+      delayMicroseconds(pulseWidthMicros);
+      digitalWrite(stepAPin, LOW);
+      delayMicroseconds(millisBtwnSteps);
+    }
+    else if(isBlack(leftPID) && isBlack(rightPID)) {
+      moveForward(1);
+    }
+  }
+  
+  /*
+  if(isWhite(leftPID) && isWhite(rightPID)) {
+    moveForward(1);
+  }
+  else if(isWhite(leftPID) && isBlack(rightPID)) {
+    digitalWrite(dirXPin, HIGH);
+    digitalWrite(dirYPin, LOW);
+    digitalWrite(dirZPin, HIGH);
+    digitalWrite(dirAPin, LOW); // Enables the motor to move in a particular direction
+
+    digitalWrite(stepYPin, HIGH);
+ 		delayMicroseconds(pulseWidthMicros);
+		digitalWrite(stepYPin, LOW);
+		delayMicroseconds(millisBtwnSteps);
+
+    digitalWrite(stepAPin, HIGH);
+ 		delayMicroseconds(pulseWidthMicros);
+		digitalWrite(stepAPin, LOW);
+ 		delayMicroseconds(millisBtwnSteps);
+  }
+  else if(isBlack(leftPID) && isWhite(rightPID)) {
+    digitalWrite(dirXPin, HIGH);
+    digitalWrite(dirYPin, LOW);
+    digitalWrite(dirZPin, HIGH);
+    digitalWrite(dirAPin, LOW); // Enables the motor to move in a particular direction
+      
+    digitalWrite(stepXPin, HIGH);
+ 		delayMicroseconds(pulseWidthMicros);
+ 		digitalWrite(stepXPin, LOW);
+		delayMicroseconds(millisBtwnSteps);
+      
+    digitalWrite(stepZPin, HIGH);
+ 		delayMicroseconds(pulseWidthMicros);
+		digitalWrite(stepZPin, LOW);
+    delayMicroseconds(millisBtwnSteps);
+  }
+  else if(isBlack(leftPID) && isBlack(rightPID)) {
+    moveForward(1);
+  }
+  */
 }
 
 void loop() {
 
   for(int i = 0; i < 8; i++) { // epic array :D
     tcaselect(i);
-    Serial.print("Sensor "); Serial.print(i); Serial.println(":");
+    //Serial.print("Sensor "); Serial.print(i); Serial.println(":");
     rgb[0][i] = RGB_sensors[i].readRed();
     rgb[1][i] = RGB_sensors[i].readGreen();
     rgb[2][i] = RGB_sensors[i].readBlue();
+    /*
     Serial.print("Red: "); Serial.println(rgb[0][i],DEC);
     Serial.print("Green: "); Serial.println(rgb[1][i],DEC);
     Serial.print("Blue: "); Serial.println(rgb[2][i],DEC);
-    Serial.println();
+    */
+    //Serial.println();
   }
+
+  Serial.print("Red: "); Serial.println(rgb[0][leftPID],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][leftPID],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][leftPID],DEC);
+
+  Serial.println();
+
+  Serial.print("Red: "); Serial.println(rgb[0][rightPID],DEC);
+  Serial.print("Green: "); Serial.println(rgb[1][rightPID],DEC);
+  Serial.print("Blue: "); Serial.println(rgb[2][rightPID],DEC);
+
+  Serial.println("---");
   /*
 
   if(!seesRed) {
@@ -396,5 +524,5 @@ void loop() {
   }
   */
 
-  delay(2000);
+  linefollowing();
 }
