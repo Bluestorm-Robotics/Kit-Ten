@@ -1,4 +1,10 @@
+/*
+team Neo Eclipse
 
+written by
+bellatheITgirl :D
+
+*/
 #include "Wire.h"
 #include "SparkFunISL29125.h"
 
@@ -147,7 +153,10 @@ void moveBackward(int steps) {
 }
 
 void scoop() {
-  
+  /*
+  gone,
+  reduced to atoms
+  */
   
 }
 
@@ -262,7 +271,7 @@ void truth() { // 1984
           }
           else if(values[4] == 2) {
             //right rear reads green
-            // WBBWG
+            // WBBWGlinefollowing
             // Right turn
           }
         }
@@ -339,7 +348,7 @@ void truth() { // 1984
           }
         }
       }
-      else if((values[2] == 1) && (values[3] == 1) %% (values[4] == 1)) {
+      else if((values[2] == 1) && (values[3] == 1) && (values[4] == 1)) { //hope didnt break anything here, swaped %% with &&. compiler error :(
         //right mid reads white
         //left rear reads white
         //right rear reads white
@@ -359,7 +368,7 @@ void linefollowing() {
 
 void loop() {
 
-  for(int i = 0; i < 8; i++) {
+  for(int i = 0; i < 8; i++) { // epic array :D
     tcaselect(i);
     Serial.print("Sensor "); Serial.print(i); Serial.println(":");
     rgb[0][i] = RGB_sensors[i].readRed();
