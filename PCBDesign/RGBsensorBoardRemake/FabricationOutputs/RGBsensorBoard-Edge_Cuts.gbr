@@ -1,0 +1,23 @@
+%TF.GenerationSoftware,KiCad,Pcbnew,8.0.1*%
+%TF.CreationDate,2024-04-24T16:38:57-04:00*%
+%TF.ProjectId,RGBsensorBoard,52474273-656e-4736-9f72-426f6172642e,rev?*%
+%TF.SameCoordinates,Original*%
+%TF.FileFunction,Profile,NP*%
+%FSLAX46Y46*%
+G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
+G04 Created by KiCad (PCBNEW 8.0.1) date 2024-04-24 16:38:57*
+%MOMM*%
+%LPD*%
+G01*
+G04 APERTURE LIST*
+%TA.AperFunction,Profile*%
+%ADD10C,0.050000*%
+%TD*%
+G04 APERTURE END LIST*
+D10*
+X139355676Y-12812424D02*
+X139355675Y-138812422D01*
+X13355676Y-138812424D01*
+X13355676Y-12812423D01*
+X139355676Y-12812424D01*
+M02*
