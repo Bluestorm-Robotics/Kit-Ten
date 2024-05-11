@@ -46,6 +46,8 @@ const int stepsPerRev=200;
 int pulseWidthMicros = 20; 	// microseconds
 int millisBtwnSteps = 2500; // ~30 rpm
 
+int P; // CALIBRATE THIS
+
 void tcaselect(uint8_t i) {
   if (i > 7) return;
  
@@ -107,7 +109,33 @@ void setup()
   delay(2000);
 }
 
+void leftStep(int num) {
+  for(int i = 0; i < num; i++) {
+    digitalWrite(stepXPin, HIGH);
+    delayMicroseconds(pulseWidthMicros);
+    digitalWrite(stepXPin, LOW);
+    delayMicroseconds(millisBtwnSteps);
+          
+    digitalWrite(stepZPin, HIGH);
+    delayMicroseconds(pulseWidthMicros);
+    digitalWrite(stepZPin, LOW);
+    delayMicroseconds(millisBtwnSteps);
+  }
+}
 
+void rightStep(int num) {
+  for(int i = 0; i < num; i++) {
+    digitalWrite(stepYPin, HIGH);
+    delayMicroseconds(pulseWidthMicros);
+    digitalWrite(stepYPin, LOW);
+    delayMicroseconds(millisBtwnSteps);
+  
+    digitalWrite(stepAPin, HIGH);
+    delayMicroseconds(pulseWidthMicros);
+    digitalWrite(stepAPin, LOW);
+    delayMicroseconds(millisBtwnSteps);
+  }
+}
 
 void moveForward(int steps) {
   digitalWrite(dirXPin, HIGH);
@@ -116,28 +144,8 @@ void moveForward(int steps) {
   digitalWrite(dirAPin, LOW); // Enables the motor to move in a particular direction
  	// Makes 200 pulses for making one full cycle rotation
  	for (int i = 0; i < steps; i++) {
- 			digitalWrite(stepXPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepXPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
-      
-      
-      digitalWrite(stepZPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepZPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
-      
-
-      digitalWrite(stepYPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepYPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
-
-      
-      digitalWrite(stepAPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepAPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
+ 			leftStep(1);
+      rightStep(1);
  	}
 }
 
@@ -148,28 +156,8 @@ void moveBackward(int steps) {
   digitalWrite(dirAPin, HIGH); // Enables the motor to move in a particular direction
  	// Makes 200 pulses for making one full cycle rotation
  	for (int i = 0; i < steps; i++) {
- 			digitalWrite(stepXPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepXPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
-      
-      
-      digitalWrite(stepZPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepZPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
-      
-
-      digitalWrite(stepYPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepYPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
-
-      
-      digitalWrite(stepAPin, HIGH);
- 			delayMicroseconds(pulseWidthMicros);
- 			digitalWrite(stepAPin, LOW);
- 			delayMicroseconds(millisBtwnSteps);
+ 			leftStep(1);
+      rightStep(1);
  	}
 }
 
@@ -231,6 +219,13 @@ void convertToInt() {
   values[2] = checkValue(rightMid);
   values[3] = checkValue(leftMid);
   values[4] = checkValue(front);
+}
+
+int takeAve(int sensor1, int sensor2) {
+  int r = rgb[0][sensor1] - rgb[0][sensor2];
+  int g = rgb[1][sensor1] - rgb[1][sensor2];
+  int b = rgb[2][sensor1] - rgb[2][sensor2];
+  return (r + b + g) / 3;
 }
 
 void truth() { // 1984
@@ -387,51 +382,16 @@ void linefollowing() {
   digitalWrite(dirZPin, HIGH);
   digitalWrite(dirAPin, LOW);
   if(isBlack(front)) {
-    for(int i = 0; i < 5; i++) {
-      digitalWrite(stepXPin, HIGH);
-      delayMicroseconds(pulseWidthMicros);
-      digitalWrite(stepXPin, LOW);
-      delayMicroseconds(millisBtwnSteps);
-        
-      digitalWrite(stepZPin, HIGH);
-      delayMicroseconds(pulseWidthMicros);
-      digitalWrite(stepZPin, LOW);
-      delayMicroseconds(millisBtwnSteps);
-    }
-    for(int i = 0; i < 5; i++) {
-      digitalWrite(stepYPin, HIGH);
-      delayMicroseconds(pulseWidthMicros);
-      digitalWrite(stepYPin, LOW);
-      delayMicroseconds(millisBtwnSteps);
-
-      digitalWrite(stepAPin, HIGH);
-      delayMicroseconds(pulseWidthMicros);
-      digitalWrite(stepAPin, LOW);
-      delayMicroseconds(millisBtwnSteps);
-    }
+    int aveDif = takeAve(leftPID, rightPID);
+    leftStep(5 + (aveDif * P));
+    rightStep(5 - (aveDif * P));
   }
   else if(isWhite(front)) {
     if(isBlack(leftPID) && isWhite(rightPID)) {
-      digitalWrite(stepXPin, HIGH);
-      delayMicroseconds(pulseWidthMicros);
-      digitalWrite(stepXPin, LOW);
-      delayMicroseconds(millisBtwnSteps);
-        
-      digitalWrite(stepZPin, HIGH);
-      delayMicroseconds(pulseWidthMicros);
-      digitalWrite(stepZPin, LOW);
-      delayMicroseconds(millisBtwnSteps);
+      leftStep(1);
     }
     else if(isWhite(leftPID) && isBlack(rightPID)) {
-      digitalWrite(stepYPin, HIGH);
-      delayMicroseconds(pulseWidthMicros);
-      digitalWrite(stepYPin, LOW);
-      delayMicroseconds(millisBtwnSteps);
-
-      digitalWrite(stepAPin, HIGH);
-      delayMicroseconds(pulseWidthMicros);
-      digitalWrite(stepAPin, LOW);
-      delayMicroseconds(millisBtwnSteps);
+      rightStep(1);
     }
     else if(isBlack(leftPID) && isBlack(rightPID)) {
       moveForward(1);
@@ -496,15 +456,13 @@ void loop() {
     //Serial.println();
   }
 
-  Serial.print("Red: "); Serial.println(rgb[0][leftPID],DEC);
-  Serial.print("Green: "); Serial.println(rgb[1][leftPID],DEC);
-  Serial.print("Blue: "); Serial.println(rgb[2][leftPID],DEC);
+  Serial.print("Red: "); Serial.print(rgb[0][leftPID],DEC);
+  Serial.print(" Green: "); Serial.print(rgb[1][leftPID],DEC);
+  Serial.print(" Blue: "); Serial.println(rgb[2][leftPID],DEC);
 
-  Serial.println();
-
-  Serial.print("Red: "); Serial.println(rgb[0][rightPID],DEC);
-  Serial.print("Green: "); Serial.println(rgb[1][rightPID],DEC);
-  Serial.print("Blue: "); Serial.println(rgb[2][rightPID],DEC);
+  Serial.print("Red: "); Serial.print(rgb[0][rightPID],DEC);
+  Serial.print(" Green: "); Serial.print(rgb[1][rightPID],DEC);
+  Serial.print(" Blue: "); Serial.println(rgb[2][rightPID],DEC);
 
   Serial.println("---");
   /*
