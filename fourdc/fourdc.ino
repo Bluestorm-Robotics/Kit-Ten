@@ -188,8 +188,8 @@ void loop() {
   // put your main code here, to run repeatedly:
   getRGBs();
 
-  leftDrive(75);
-  rightDrive(75);
+  leftDrive(200);
+  rightDrive(200);
   /*  
   for(int i = 25; i < 256; i++) {
     leftDrive(i);
