@@ -4,13 +4,29 @@
 
 #define TCAADDR 0x70
 
+#define trigPin 13
+#define echoPin 12
+
 bool seesRed;
-int P; // CALIBRATE THIS
-int speed;
+int P = 0.5; // CALIBRATE THIS
+int speed = 150;
+
+int counter;
 
 int values[5];
 
+float distance;
+
 SFE_ISL29125 RGB_sensors[8];
+
+/*
+  Wiring Colors
+    White - Ground
+    Purple - 5V
+    Red - SCL
+    Green - SDA
+    Gray - 3.3V
+*/
 
 const int front = 4;
 const int leftMid = 2;
@@ -127,6 +143,24 @@ int takeAve(int sensor1, int sensor2) {
   return (r + b + g) / 3;
 }
 
+//RETURNS THE DISTANCE MEASURED BY THE HC-SR04 DISTANCE SENSOR
+float getDistance()
+{
+  float echoTime;                   //variable to store the time it takes for a ping to bounce off an object
+  float calculatedDistance;         //variable to store the distance calculated from the echo time
+
+  //send out an ultrasonic pulse that's 10ms long
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  echoTime = pulseIn(echoPin, HIGH);      //use the pulsein command to see how long it takes for the pulse to bounce back to the sensor
+
+  calculatedDistance = echoTime / 148.0;  //calculate the distance of the object that reflected the pulse (half the bounce time multiplied by the speed of sound)
+
+  return calculatedDistance;              //send back the distance that was calculated
+}
+
 void linefollowing() {
   if(checkColor(front) == 1) {
     int aveDif = takeAve(leftPID, rightPID);
@@ -152,6 +186,8 @@ void linefollowing() {
 void setup() {
   // put your setup code here, to run once:
   seesRed = false;
+  distance = 0;
+  counter = 0;
   Wire.begin();
 
   pinMode(enAR, OUTPUT);
@@ -167,6 +203,9 @@ void setup() {
 	pinMode(in2L, OUTPUT);
 	pinMode(in3L, OUTPUT);
 	pinMode(in4L, OUTPUT);
+
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 
   stop();
 
@@ -186,10 +225,20 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  distance = getDistance();
   getRGBs();
+  checkColor(front);
+  if(seesRed || (distance < 10) || (counter > 1000)) {
+    stop();
+  }
+  else {
+    linefollowing();
+    //leftDrive(speed);
+    //rightDrive(speed);
+  }
+  counter++;
+  delay(10);
 
-  leftDrive(200);
-  rightDrive(200);
   /*  
   for(int i = 25; i < 256; i++) {
     leftDrive(i);
