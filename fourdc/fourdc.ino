@@ -9,7 +9,7 @@
 
 bool seesRed;
 bool seesSilver;
-int P = 0.5; // CALIBRATE THIS
+int P = 0.5;  // CALIBRATE THIS
 int speed = 50;
 
 int counter;
@@ -60,30 +60,32 @@ const int in4L = 41;
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
- 
+
   Wire.beginTransmission(TCAADDR);
   Wire.write(1 << i);
-  Wire.endTransmission();  
+  Wire.endTransmission();
 }
 
 void checkMulti() {
-  for (uint8_t t=0; t<8; t++) {
+  for (uint8_t t = 0; t < 8; t++) {
     tcaselect(t);
-    Serial.print("TCA Port #"); Serial.println(t);
+    Serial.print("TCA Port #");
+    Serial.println(t);
 
-    for (uint8_t addr = 0; addr<=127; addr++) {
+    for (uint8_t addr = 0; addr <= 127; addr++) {
       if (addr == TCAADDR) continue;
-        Wire.beginTransmission(addr);
-        if (!Wire.endTransmission()) {
-          Serial.print("Found I2C 0x");  Serial.println(addr,HEX);
-        }
+      Wire.beginTransmission(addr);
+      if (!Wire.endTransmission()) {
+        Serial.print("Found I2C 0x");
+        Serial.println(addr, HEX);
       }
     }
+  }
   Serial.println("\ndone");
 }
 
 void getRGBs() {
-  for(int i = 0; i < 8; i++) { // epic array :D
+  for (int i = 0; i < 8; i++) {  // epic array :D
     tcaselect(i);
     //Serial.print("Sensor "); Serial.print(i); Serial.println(":");
     rgb[0][i] = RGB_sensors[i].readRed();
@@ -93,10 +95,9 @@ void getRGBs() {
 }
 
 void leftFwd(int vel) {
-  if(vel < 0) {
+  if (vel < 0) {
     leftBkd(abs(vel));
-  }
-  else {
+  } else {
     analogWrite(enAL, vel);
     analogWrite(enBL, vel);
     digitalWrite(in1L, LOW);
@@ -107,10 +108,9 @@ void leftFwd(int vel) {
 }
 
 void rightFwd(int vel) {
-  if(vel < 0) {
+  if (vel < 0) {
     rightBkd(abs(vel));
-  }
-  else {
+  } else {
     analogWrite(enAR, vel);
     analogWrite(enBR, vel);
     digitalWrite(in1R, LOW);
@@ -121,10 +121,9 @@ void rightFwd(int vel) {
 }
 
 void leftBkd(int vel) {
-  if(vel < 0) {
+  if (vel < 0) {
     leftFwd(abs(vel));
-  }
-    else {
+  } else {
     analogWrite(enAL, vel);
     analogWrite(enBL, vel);
     digitalWrite(in1L, HIGH);
@@ -135,10 +134,9 @@ void leftBkd(int vel) {
 }
 
 void rightBkd(int vel) {
-  if(vel > 0) {
+  if (vel > 0) {
     rightFwd(abs(vel));
-  }
-  else {
+  } else {
     analogWrite(enAR, vel);
     analogWrite(enBR, vel);
     digitalWrite(in1R, HIGH);
@@ -181,17 +179,14 @@ int checkColor(int sensor) {
   else return 0;
 }*/
 int checkColor(int sensor) {
-  if((rgb[0][sensor] > 1500) && (rgb[1][sensor] > 1500)) {
-    return 6; // white
-  }
-  else if((rgb[0][sensor] < 1500) && (rgb[1][sensor] < 1500)) {
-    return 1; // black
-  }
-  else if((rgb[0][sensor] < 1500) && (rgb[1][sensor] > 1500)) {
-    return 3; // green
-  }
-  else if((rgb[0][sensor] > 1500) && (rgb[1][sensor] < 1500)) {
-    return 5; // red
+  if ((rgb[0][sensor] > 1500) && (rgb[1][sensor] > 1500)) {
+    return 6;  // white
+  } else if ((rgb[0][sensor] < 1500) && (rgb[1][sensor] < 1500)) {
+    return 1;  // black
+  } else if ((rgb[0][sensor] < 1500) && (rgb[1][sensor] > 1500)) {
+    return 3;  // green
+  } else if ((rgb[0][sensor] > 1500) && (rgb[1][sensor] < 1500)) {
+    return 5;  // red
     seesRed = true;
   }
   /*
@@ -200,7 +195,8 @@ int checkColor(int sensor) {
     seesSilver = !seesSilver;
   }
   */
-  else return 0;
+  else
+    return 0;
 }
 
 
@@ -212,21 +208,20 @@ int takeAve(int sensor1, int sensor2) {
 }
 
 //RETURNS THE DISTANCE MEASURED BY THE HC-SR04 DISTANCE SENSOR
-float getDistance()
-{
-  float echoTime;                   //variable to store the time it takes for a ping to bounce off an object
-  float calculatedDistance;         //variable to store the distance calculated from the echo time
+float getDistance() {
+  float echoTime;            //variable to store the time it takes for a ping to bounce off an object
+  float calculatedDistance;  //variable to store the distance calculated from the echo time
 
   //send out an ultrasonic pulse that's 10ms long
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
 
-  echoTime = pulseIn(echoPin, HIGH);      //use the pulsein command to see how long it takes for the pulse to bounce back to the sensor
+  echoTime = pulseIn(echoPin, HIGH);  //use the pulsein command to see how long it takes for the pulse to bounce back to the sensor
 
   calculatedDistance = echoTime / 148.0;  //calculate the distance of the object that reflected the pulse (half the bounce time multiplied by the speed of sound)
 
-  return calculatedDistance;              //send back the distance that was calculated
+  return calculatedDistance;  //send back the distance that was calculated
 }
 
 void leftTurn() {
@@ -251,29 +246,28 @@ void convertToInt() {
   values[4] = checkColor(front);
 }
 
-bool truth() { // 1984
-  if(values[0] == 1) {
+bool truth() {  // 1984
+  //Serial.println("truth");
+  if (values[0] == 1) {
     //front sensor reads black
-    if(values[1] == 1) {
+    if (values[1] == 1) {
       //left mid reads black
-      if(values[2] == 1) {
+      if (values[2] == 1) {
         //right mid reads black
-        if((values[3] == 6) && (values[4] == 3)) {
+        if ((values[3] == 6) && (values[4] == 3)) {
           //left rear reads white
           //right rear reads green
           // BBBWG
           rightTurn();
           return true;
-        }
-        else if(values[3] == 3) {
+        } else if (values[3] == 3) {
           //left rear reads green
-          if(values[4] == 6) {
+          if (values[4] == 6) {
             //right rear reads white
             // BBBGW
             leftTurn();
             return true;
-          }
-          else if(values[4] == 3) {
+          } else if (values[4] == 3) {
             //right rear reads green
             // BBBGG
             rightTurn();
@@ -281,8 +275,7 @@ bool truth() { // 1984
             return true;
           }
         }
-      }
-      else if((values[2] == 6) && (values[3] == 3) && (values[4] == 6)) {
+      } else if ((values[2] == 6) && (values[3] == 3) && (values[4] == 6)) {
         //right mid reads white
         //left rear reads green
         //right rear reads white
@@ -290,8 +283,7 @@ bool truth() { // 1984
         leftTurn();
         return true;
       }
-    }
-    else if((values[1] == 6) && (values[2] == 1) && (values[3] == 6) && (values[4] == 3)) {
+    } else if ((values[1] == 6) && (values[2] == 1) && (values[3] == 6) && (values[4] == 3)) {
       //left mid reads white
       //right mid reads black
       //left rear reads white
@@ -300,37 +292,33 @@ bool truth() { // 1984
       rightTurn();
       return true;
     }
-  }
-  else if(values[0] == 6) {
+  } else if (values[0] == 6) {
     //front sensor reads white
-    if(values[1] == 1) {
+    if (values[1] == 1) {
       //left mid reads black
-      if(values[2] == 1) {
+      if (values[2] == 1) {
         //right mid reads black
-        if(values[3] == 6) {
+        if (values[3] == 6) {
           //left rear reads white
-          if(values[4] == 6) {
+          if (values[4] == 6) {
             //right rear reads white
             // WBBWW
             // Initialization
             return true;
-          }
-          else if(values[4] == 3) {
+          } else if (values[4] == 3) {
             //right rear reads green
             // WBBWG
             rightTurn();
             return true;
           }
-        }
-        else if(values[3] == 3) {
+        } else if (values[3] == 3) {
           //left rear reads green
-          if(values[4] == 6) {
+          if (values[4] == 6) {
             //right rear reads white
             // WBBGW
             leftTurn();
             return true;
-          }
-          else if(values[4] == 3) {
+          } else if (values[4] == 3) {
             //right rear reads green
             // WBBGG
             rightTurn();
@@ -338,32 +326,28 @@ bool truth() { // 1984
             return true;
           }
         }
-      }
-      else if(values[2] == 6) {
+      } else if (values[2] == 6) {
         //right mid reads white
-        if((values[3] == 1) && (values[4] == 6)) {
+        if ((values[3] == 1) && (values[4] == 6)) {
           //left rear reads black
           //right rear reads white
           // WBWBW
           // Shift left
           return true;
-        }
-        else if(values[3] == 6) {
+        } else if (values[3] == 6) {
           //left rear reads white
-          if(values[4] == 1) {
+          if (values[4] == 1) {
             //right rear reads black
             // WBWWB
             // Turn left (~60 deg)
             return true;
-          }
-          else if(values[4] == 6) {
+          } else if (values[4] == 6) {
             //right rear reads white
             // WBWWW
             // Check rear sensor
             return true;
           }
-        }
-        else if((values[3] == 3) && (values[4] == 6)) {
+        } else if ((values[3] == 3) && (values[4] == 6)) {
           //left rear reads green
           //right rear reads white
           // WBWGW
@@ -371,41 +355,36 @@ bool truth() { // 1984
           return true;
         }
       }
-    }
-    else if(values[1] == 6) {
+    } else if (values[1] == 6) {
       //left mid reads white
-      if(values[2] == 1) {
+      if (values[2] == 1) {
         //right mid reads black
-        if((values[3] == 1) && (values[4] == 6)) {
+        if ((values[3] == 1) && (values[4] == 6)) {
           //left rear reads black
           //right rear reads white
           // WWBBW
           // Turn right (60 deg)
           return true;
-        }
-        else if(values[3] == 6) {
+        } else if (values[3] == 6) {
           //left rear reads white
-          if(values[4] == 1) {
+          if (values[4] == 1) {
             //right rear reads black
             // WWBWB
             // Shift right
             return true;
-          }
-          else if(values[4] == 6) {
+          } else if (values[4] == 6) {
             //right rear reads white
             // WWBWW
             // Check rear sensor
             return true;
-          }
-          else if(values[4] == 3) {
+          } else if (values[4] == 3) {
             //right rear reads green
             // WWBWG
             rightTurn();
             return true;
           }
         }
-      }
-      else if((values[2] == 6) && (values[3] == 6) && (values[4] == 6)) { //hope didnt break anything here, swaped %% with &&. compiler error :(
+      } else if ((values[2] == 6) && (values[3] == 6) && (values[4] == 6)) {  //hope didnt break anything here, swaped %% with &&. compiler error :(
         //right mid reads white
         //left rear reads white
         //right rear reads white
@@ -419,6 +398,7 @@ bool truth() { // 1984
 }
 
 void linefollowing() {
+  //Serial.println("line");
   int aveDif = takeAve(leftPID, rightPID);
   //Serial.println(aveDif);
   leftFwd(speed + (aveDif * P));
@@ -454,28 +434,30 @@ void setup() {
   Wire.begin();
 
   pinMode(enAR, OUTPUT);
-	pinMode(enBR, OUTPUT);
-	pinMode(in1R, OUTPUT);
-	pinMode(in2R, OUTPUT);
-	pinMode(in3R, OUTPUT);
-	pinMode(in4R, OUTPUT);
+  pinMode(enBR, OUTPUT);
+  pinMode(in1R, OUTPUT);
+  pinMode(in2R, OUTPUT);
+  pinMode(in3R, OUTPUT);
+  pinMode(in4R, OUTPUT);
 
   pinMode(enAL, OUTPUT);
-	pinMode(enBL, OUTPUT);
-	pinMode(in1L, OUTPUT);
-	pinMode(in2L, OUTPUT);
-	pinMode(in3L, OUTPUT);
-	pinMode(in4L, OUTPUT);
+  pinMode(enBL, OUTPUT);
+  pinMode(in1L, OUTPUT);
+  pinMode(in2L, OUTPUT);
+  pinMode(in3L, OUTPUT);
+  pinMode(in4L, OUTPUT);
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 
   stop();
 
-  for(int i = 0; i < 8; i++) {
+  for (int i = 0; i < 8; i++) {
     tcaselect(i);
     if (RGB_sensors[i].init()) {
-      Serial.print("Sensor "); Serial.print(i); Serial.print(" Initialization Successful\n\r");
+      Serial.print("Sensor ");
+      Serial.print(i);
+      Serial.print(" Initialization Successful\n\r");
       Serial.println();
     }
   }
@@ -490,23 +472,30 @@ void loop() {
   // put your main code here, to run repeatedly:
   distance = getDistance();
   //Serial.println(distance);
-  //Serial.print("Left: "); Serial.print(rgb[0][leftPID]); Serial.print(" "); Serial.print(rgb[1][leftPID]); Serial.print(" "); Serial.println(rgb[3][leftPID]);
-  //Serial.print("Right: "); Serial.print(rgb[0][rightPID]); Serial.print(" "); Serial.print(rgb[1][rightPID]); Serial.print(" "); Serial.println(rgb[3][rightPID]);
+  Serial.print("Left: ");
+  Serial.print(rgb[0][leftPID]);
+  Serial.print(" ");
+  Serial.print(rgb[1][leftPID]);
+  Serial.print(" ");
+  Serial.println(rgb[3][leftPID]);
+  Serial.print("Right: ");
+  Serial.print(rgb[0][rightPID]);
+  Serial.print(" ");
+  Serial.print(rgb[1][rightPID]);
+  Serial.print(" ");
+  Serial.println(rgb[3][rightPID]);
   getRGBs();
   checkColor(front);
   //Serial.print(rgb[0][front]); Serial.print(" "); Serial.print(rgb[1][front]); Serial.print(" "); Serial.println(rgb[3][front]);
-  Serial.println(checkColor(front));
-  Serial.print(checkColor(leftPID));Serial.print(" ");
-  Serial.println(checkColor(rightPID));
-  
-  if(seesRed) {
+  //Serial.println(checkColor(front));
+  //Serial.print(checkColor(leftPID));Serial.print(" "); Serial.println(checkColor(rightPID));
+
+  if (seesRed) {
     stop();
-  }
-  else if(distance < 10) {
+  } else if (distance < 10) {
     //go around
     stop();
-  }
-  else {
+  } else {
     /*
     if(checkColor(front) == 6) {
       leftFwd(speed);
@@ -516,7 +505,7 @@ void loop() {
       stop();
     }
     */
-    if(!truth()) {
+    if (!truth()) {
       linefollowing();
     }
   }
@@ -525,7 +514,7 @@ void loop() {
 
   //leftBkd(speed);
   //rightBkd(speed);
-  
+
   //counter++;
   //delay(10);
 
