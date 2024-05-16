@@ -10,7 +10,7 @@
 bool seesRed;
 bool seesSilver;
 int P = 0.5;  // CALIBRATE THIS
-int speed = 50;
+int speed = 55;
 
 int counter;
 
@@ -239,11 +239,11 @@ void rightTurn() {
 }
 
 void convertToInt() {
-  values[0] = checkColor(rightBack);
-  values[1] = checkColor(leftBack);
+  values[0] = checkColor(front);
+  values[1] = checkColor(leftMid);
   values[2] = checkColor(rightMid);
-  values[3] = checkColor(leftMid);
-  values[4] = checkColor(front);
+  values[3] = checkColor(leftBack);
+  values[4] = checkColor(rightBack);
 }
 
 bool truth() {  // 1984
@@ -488,7 +488,7 @@ void loop() {
   checkColor(front);
   //Serial.print(rgb[0][front]); Serial.print(" "); Serial.print(rgb[1][front]); Serial.print(" "); Serial.println(rgb[3][front]);
   //Serial.println(checkColor(front));
-  //Serial.print(checkColor(leftPID));Serial.print(" "); Serial.println(checkColor(rightPID));
+  Serial.print(checkColor(leftPID));Serial.print(" "); Serial.println(checkColor(rightPID));
 
   if (seesRed) {
     stop();
@@ -496,18 +496,22 @@ void loop() {
     //go around
     stop();
   } else {
-    /*
-    if(checkColor(front) == 6) {
+    // testing color detection
+    if(checkColor(leftPID) == 6) {
       leftFwd(speed);
       rightFwd(speed);
+      delay(100);
+      stop();
+      delay(10);
     }
-    else if(checkColor(front) == 1) {
+    else if(checkColor(leftPID) == 1) {
       stop();
     }
-    */
+    /*
     if (!truth()) {
       linefollowing();
     }
+    */
   }
 
   //delay(100);
