@@ -10,7 +10,7 @@
 bool seesRed;
 bool seesSilver;
 int P = 0.5;  // CALIBRATE THIS
-int speed = 55;
+int speed = 75;
 
 int counter;
 
@@ -40,6 +40,9 @@ const int back = 3;
 
 unsigned int rgb[3][8];
 
+const int encoder = 4;
+const int encoder2 = 5;
+
 // right controller
 
 const int enAR = 46;
@@ -51,7 +54,7 @@ const int in4R = 51;
 
 // left controller
 
-const int enAL = 2;
+const int enAL = 4;
 const int enBL = 3;
 const int in1L = 35;
 const int in2L = 37;
@@ -397,12 +400,46 @@ bool truth() {  // 1984
   return false;
 }
 
+void simple() {
+  if((checkColor(leftPID) == 6) && (checkColor(rightPID) == 1)) {
+    leftFwd(speed);
+    rightBkd(speed);
+    delay(100);
+    stop();
+    delay(50);
+  }
+  else if((checkColor(leftPID) == 1) && (checkColor(rightPID) == 6)) {
+    leftBkd(speed);
+    rightFwd(speed);
+    delay(100);
+    stop();
+    delay(50);
+  }
+  else if((checkColor(leftPID) == 6) && (checkColor(rightPID) == 6)) {
+    leftFwd(speed);
+    rightFwd(speed);
+    delay(100);
+    stop();
+    delay(50);
+  }
+  else if((checkColor(leftPID) == 1) && (checkColor(rightPID) == 1)) {
+    leftFwd(speed);
+    rightFwd(speed);
+    delay(100);
+    stop();
+    delay(50);
+  }
+}
+
 void linefollowing() {
   //Serial.println("line");
   int aveDif = takeAve(leftPID, rightPID);
   //Serial.println(aveDif);
   leftFwd(speed + (aveDif * P));
   rightFwd(speed - (aveDif * P));
+  delay(100);
+  stop();
+  delay(10);
   /*
   if(checkColor(front) == 1) {
     int aveDif = takeAve(leftPID, rightPID);
@@ -472,6 +509,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   distance = getDistance();
   //Serial.println(distance);
+  /*
   Serial.print("Left: ");
   Serial.print(rgb[0][leftPID]);
   Serial.print(" ");
@@ -484,11 +522,23 @@ void loop() {
   Serial.print(rgb[1][rightPID]);
   Serial.print(" ");
   Serial.println(rgb[3][rightPID]);
+  */
   getRGBs();
   checkColor(front);
   //Serial.print(rgb[0][front]); Serial.print(" "); Serial.print(rgb[1][front]); Serial.print(" "); Serial.println(rgb[3][front]);
   //Serial.println(checkColor(front));
-  Serial.print(checkColor(leftPID));Serial.print(" "); Serial.println(checkColor(rightPID));
+  //Serial.print(checkColor(leftPID));Serial.print(" "); Serial.println(checkColor(rightPID));
+  
+  Serial.print("Front: ");Serial.print(checkColor(front));
+  Serial.print(" LeftPID: ");Serial.print(checkColor(leftPID)); 
+  Serial.print(" RightPID: ");Serial.print(checkColor(rightPID)); 
+  Serial.print(" LeftMid: ");Serial.print(checkColor(leftMid)); 
+  Serial.print(" RightMid: ");Serial.print(checkColor(rightMid)); 
+  Serial.print(" LeftBack: ");Serial.print(checkColor(leftBack)); 
+  Serial.print(" RightBack: ");Serial.print(checkColor(rightBack)); 
+  Serial.print(" Back: ");Serial.print(checkColor(back)); 
+  
+  Serial.println();
 
   if (seesRed) {
     stop();
@@ -497,6 +547,7 @@ void loop() {
     stop();
   } else {
     // testing color detection
+    /*
     if(checkColor(leftPID) == 6) {
       leftFwd(speed);
       rightFwd(speed);
@@ -507,11 +558,13 @@ void loop() {
     else if(checkColor(leftPID) == 1) {
       stop();
     }
-    /*
-    if (!truth()) {
-      linefollowing();
-    }
     */
+    
+    if (!truth()) {
+      //linefollowing();
+      simple();
+    }
+    
   }
 
   //delay(100);
