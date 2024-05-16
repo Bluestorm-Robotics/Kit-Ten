@@ -97,6 +97,33 @@ void getRGBs() {
   }
 }
 
+void printNums() {
+  Serial.print("Front: ");Serial.print(checkColor(front));
+  Serial.print(" LeftPID: ");Serial.print(checkColor(leftPID)); 
+  Serial.print(" RightPID: ");Serial.print(checkColor(rightPID)); 
+  Serial.print(" LeftMid: ");Serial.print(checkColor(leftMid)); 
+  Serial.print(" RightMid: ");Serial.print(checkColor(rightMid)); 
+  Serial.print(" LeftBack: ");Serial.print(checkColor(leftBack)); 
+  Serial.print(" RightBack: ");Serial.print(checkColor(rightBack)); 
+  Serial.print(" Back: ");Serial.print(checkColor(back)); 
+  Serial.println();
+}
+
+void printVals() {
+  Serial.print("Left: ");
+  Serial.print(rgb[0][leftPID]);
+  Serial.print(" ");
+  Serial.print(rgb[1][leftPID]);
+  Serial.print(" ");
+  Serial.println(rgb[3][leftPID]);
+  Serial.print("Right: ");
+  Serial.print(rgb[0][rightPID]);
+  Serial.print(" ");
+  Serial.print(rgb[1][rightPID]);
+  Serial.print(" ");
+  Serial.println(rgb[3][rightPID]);
+}
+
 void leftFwd(int vel) {
   if (vel < 0) {
     leftBkd(abs(vel));
@@ -182,9 +209,9 @@ int checkColor(int sensor) {
   else return 0;
 }*/
 int checkColor(int sensor) {
-  if ((rgb[0][sensor] > 1500) && (rgb[1][sensor] > 1500)) {
+  if ((rgb[0][sensor] > 1400) && (rgb[1][sensor] > 1500)) {
     return 6;  // white
-  } else if ((rgb[0][sensor] < 1500) && (rgb[1][sensor] < 1500)) {
+  } else if ((rgb[0][sensor] < 200) && (rgb[1][sensor] < 200)) {
     return 1;  // black
   } else if ((rgb[0][sensor] < 1500) && (rgb[1][sensor] > 1500)) {
     return 3;  // green
@@ -404,28 +431,28 @@ void simple() {
   if((checkColor(leftPID) == 6) && (checkColor(rightPID) == 1)) {
     leftFwd(speed);
     rightBkd(speed);
-    delay(100);
+    delay(50);
     stop();
     delay(50);
   }
   else if((checkColor(leftPID) == 1) && (checkColor(rightPID) == 6)) {
     leftBkd(speed);
     rightFwd(speed);
-    delay(100);
+    delay(50);
     stop();
     delay(50);
   }
   else if((checkColor(leftPID) == 6) && (checkColor(rightPID) == 6)) {
     leftFwd(speed);
     rightFwd(speed);
-    delay(100);
+    delay(50);
     stop();
     delay(50);
   }
   else if((checkColor(leftPID) == 1) && (checkColor(rightPID) == 1)) {
     leftFwd(speed);
     rightFwd(speed);
-    delay(100);
+    delay(50);
     stop();
     delay(50);
   }
@@ -437,7 +464,7 @@ void linefollowing() {
   //Serial.println(aveDif);
   leftFwd(speed + (aveDif * P));
   rightFwd(speed - (aveDif * P));
-  delay(100);
+  delay(50);
   stop();
   delay(10);
   /*
@@ -529,16 +556,7 @@ void loop() {
   //Serial.println(checkColor(front));
   //Serial.print(checkColor(leftPID));Serial.print(" "); Serial.println(checkColor(rightPID));
   
-  Serial.print("Front: ");Serial.print(checkColor(front));
-  Serial.print(" LeftPID: ");Serial.print(checkColor(leftPID)); 
-  Serial.print(" RightPID: ");Serial.print(checkColor(rightPID)); 
-  Serial.print(" LeftMid: ");Serial.print(checkColor(leftMid)); 
-  Serial.print(" RightMid: ");Serial.print(checkColor(rightMid)); 
-  Serial.print(" LeftBack: ");Serial.print(checkColor(leftBack)); 
-  Serial.print(" RightBack: ");Serial.print(checkColor(rightBack)); 
-  Serial.print(" Back: ");Serial.print(checkColor(back)); 
   
-  Serial.println();
 
   if (seesRed) {
     stop();
@@ -559,7 +577,7 @@ void loop() {
       stop();
     }
     */
-    
+    printVals();
     if (!truth()) {
       //linefollowing();
       simple();

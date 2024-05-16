@@ -164,13 +164,18 @@ void loop() {
   }
   else if(counter == 50) {
     for(int i = 0; i < 8; i++) {
+      Serial.print("Sensor "); Serial.println(i);
       for(int j = 0; i < 3; j++) {
-        Serial.println("Sensor " + i);
         Serial.print(mins[j][i]); Serial.print(" ");
-        Serial.println();
-        Serial.print(maxes[j][i]); Serial.print(" ");
-        Serial.println();
       }
+      Serial.println();
+      for(int j = 0; i < 3; j++) {
+        Serial.print(maxes[j][i]); Serial.print(" ");
+      }
+      Serial.println();
     }
+  }
+  else {
+    stop();
   }
 }
