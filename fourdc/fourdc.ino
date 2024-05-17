@@ -11,6 +11,7 @@ bool seesRed;
 bool seesSilver;
 int P = 0.5;  // CALIBRATE THIS
 int speed = 75;
+int delayMs = 50;
 
 int counter;
 
@@ -34,8 +35,8 @@ const int leftMid = 2;
 const int rightMid = 6;
 const int leftBack = 5;
 const int rightBack = 7;
-const int leftPID = 1;
-const int rightPID = 0;
+const int leftPID = 0;
+const int rightPID = 1;
 const int back = 3;
 
 unsigned int rgb[3][8];
@@ -118,18 +119,26 @@ void printNums() {
 }
 
 void printVals() {
-  Serial.print("Left: ");
+  /*Serial.print("Left: ");
   Serial.print(rgb[0][leftPID]);
   Serial.print(" ");
   Serial.print(rgb[1][leftPID]);
   Serial.print(" ");
-  Serial.println(rgb[3][leftPID]);
+  Serial.println(rgb[3][leftPID]);*/
   Serial.print("Right: ");
   Serial.print(rgb[0][rightPID]);
   Serial.print(" ");
   Serial.print(rgb[1][rightPID]);
   Serial.print(" ");
-  Serial.println(rgb[3][rightPID]);
+  Serial.println(rgb[3][rightPID]);/*
+  Serial.print("front: ");
+  Serial.print(rgb[0][front]);
+  Serial.print(" ");
+  Serial.print(rgb[1][front]);
+  Serial.print(" ");
+  Serial.println(rgb[3][front]);*/
+    Serial.println("---------");
+  delay(700);
 }
 
 void leftFwd(int vel) {
@@ -159,7 +168,7 @@ void rightFwd(int vel) {
 }
 
 void leftBkd(int vel) {
-  if (vel > 0) {
+  if (vel < 0) {
     leftFwd(abs(vel));
   } else {
     analogWrite(enAL, vel);
@@ -172,7 +181,7 @@ void leftBkd(int vel) {
 }
 
 void rightBkd(int vel) {
-  if (vel > 0) {
+  if (vel < 0) {
     rightFwd(abs(vel));
   } else {
     analogWrite(enAR, vel);
@@ -217,9 +226,9 @@ int checkColor(int sensor) {
   else return 0;
 }*/
 int checkColor(int sensor) {
-  if ((rgb[0][sensor] > 1400) && (rgb[1][sensor] > 1500)) {
+  if ((rgb[0][sensor] > 4000) && (rgb[1][sensor] > 7000)) {
     return 6;  // white
-  } else if ((rgb[0][sensor] < 200) && (rgb[1][sensor] < 200)) {
+  } else if ((rgb[0][sensor] < 1600 ) && (rgb[1][sensor] < 2500)) {
     return 1;  // black
   } else if ((rgb[0][sensor] < 1500) && (rgb[1][sensor] > 1500)) {
     return 3;  // green
@@ -437,29 +446,69 @@ bool truth() {  // 1984
 
 void simple() {
   if ((checkColor(leftPID) == 6) && (checkColor(rightPID) == 1)) {
-    leftFwd(speed);
-    rightBkd(speed);
-    delay(50);
-    stop();
-    delay(50);
-  } else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 6)) {
     leftBkd(speed);
     rightFwd(speed);
-    delay(50);
+    delay(delayMs);
     stop();
-    delay(50);
+    delay(delayMs);
+    Serial.print("left ");
+  } else if ((checkColor(leftPID) == 6) && (checkColor(rightPID) != 6)) {
+    leftBkd(speed);
+    rightFwd(speed);
+    delay(delayMs);
+    stop();
+    delay(delayMs);
+    Serial.print("left");
+  } else if ((checkColor(leftPID) != 1) && (checkColor(rightPID) == 1)) {
+    leftBkd(speed);
+    rightFwd(speed);
+    delay(delayMs);
+    stop();
+    delay(delayMs);
+    Serial.print("left ");
+  } else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 6)) {
+    leftFwd(speed);
+    rightBkd(speed);
+    delay(delayMs);
+    stop();
+    delay(delayMs);
+    Serial.print("right ");
+  } else if ((checkColor(leftPID) != 6) && (checkColor(rightPID) == 6)) {
+    leftFwd(speed);
+    rightBkd(speed);
+    delay(delayMs);
+    stop();
+    delay(delayMs);
+    Serial.print("right ");
+  } else if ((checkColor(leftPID) != 1) && (checkColor(rightPID) == 1)) {
+    leftFwd(speed);
+    rightBkd(speed);
+    delay(delayMs);
+    stop();
+    delay(delayMs);
+    Serial.print("right ");
   } else if ((checkColor(leftPID) == 6) && (checkColor(rightPID) == 6)) {
     leftFwd(speed);
     rightFwd(speed);
-    delay(50);
+    delay(delayMs);
     stop();
-    delay(50);
+    delay(delayMs);
+    Serial.print("straight ");
   } else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 1)) {
     leftFwd(speed);
     rightFwd(speed);
-    delay(50);
+    delay(delayMs);
     stop();
-    delay(50);
+    delay(delayMs);
+    Serial.print("straight ");
+  }
+  else {
+    leftFwd(speed);
+    rightFwd(speed);
+    delay(delayMs);
+    stop();
+    delay(delayMs);
+    Serial.print("straight (slow) ");
   }
 }
 
@@ -469,7 +518,7 @@ void linefollowing() {
   //Serial.println(aveDif);
   leftFwd(speed + (aveDif * P));
   rightFwd(speed - (aveDif * P));
-  delay(50);
+  delay(delayMs);
   stop();
   delay(10);
   /*
