@@ -98,14 +98,22 @@ void getRGBs() {
 }
 
 void printNums() {
-  Serial.print("Front: ");Serial.print(checkColor(front));
-  Serial.print(" LeftPID: ");Serial.print(checkColor(leftPID)); 
-  Serial.print(" RightPID: ");Serial.print(checkColor(rightPID)); 
-  Serial.print(" LeftMid: ");Serial.print(checkColor(leftMid)); 
-  Serial.print(" RightMid: ");Serial.print(checkColor(rightMid)); 
-  Serial.print(" LeftBack: ");Serial.print(checkColor(leftBack)); 
-  Serial.print(" RightBack: ");Serial.print(checkColor(rightBack)); 
-  Serial.print(" Back: ");Serial.print(checkColor(back)); 
+  Serial.print("Front: ");
+  Serial.print(checkColor(front));
+  Serial.print(" LeftPID: ");
+  Serial.print(checkColor(leftPID));
+  Serial.print(" RightPID: ");
+  Serial.print(checkColor(rightPID));
+  Serial.print(" LeftMid: ");
+  Serial.print(checkColor(leftMid));
+  Serial.print(" RightMid: ");
+  Serial.print(checkColor(rightMid));
+  Serial.print(" LeftBack: ");
+  Serial.print(checkColor(leftBack));
+  Serial.print(" RightBack: ");
+  Serial.print(checkColor(rightBack));
+  Serial.print(" Back: ");
+  Serial.print(checkColor(back));
   Serial.println();
 }
 
@@ -125,7 +133,7 @@ void printVals() {
 }
 
 void leftFwd(int vel) {
-  if (vel > 0) {
+  if (vel < 0) {
     leftBkd(abs(vel));
   } else {
     analogWrite(enAL, vel);
@@ -151,7 +159,7 @@ void rightFwd(int vel) {
 }
 
 void leftBkd(int vel) {
-  if (vel < 0) {
+  if (vel > 0) {
     leftFwd(abs(vel));
   } else {
     analogWrite(enAL, vel);
@@ -428,28 +436,25 @@ bool truth() {  // 1984
 }
 
 void simple() {
-  if((checkColor(leftPID) == 6) && (checkColor(rightPID) == 1)) {
+  if ((checkColor(leftPID) == 6) && (checkColor(rightPID) == 1)) {
     leftFwd(speed);
     rightBkd(speed);
     delay(50);
     stop();
     delay(50);
-  }
-  else if((checkColor(leftPID) == 1) && (checkColor(rightPID) == 6)) {
+  } else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 6)) {
     leftBkd(speed);
     rightFwd(speed);
     delay(50);
     stop();
     delay(50);
-  }
-  else if((checkColor(leftPID) == 6) && (checkColor(rightPID) == 6)) {
+  } else if ((checkColor(leftPID) == 6) && (checkColor(rightPID) == 6)) {
     leftFwd(speed);
     rightFwd(speed);
     delay(50);
     stop();
     delay(50);
-  }
-  else if((checkColor(leftPID) == 1) && (checkColor(rightPID) == 1)) {
+  } else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 1)) {
     leftFwd(speed);
     rightFwd(speed);
     delay(50);
@@ -555,8 +560,8 @@ void loop() {
   //Serial.print(rgb[0][front]); Serial.print(" "); Serial.print(rgb[1][front]); Serial.print(" "); Serial.println(rgb[3][front]);
   //Serial.println(checkColor(front));
   //Serial.print(checkColor(leftPID));Serial.print(" "); Serial.println(checkColor(rightPID));
-  
-  
+
+
 
   if (seesRed) {
     stop();
@@ -577,11 +582,12 @@ void loop() {
       stop();
     }
     */
+    simple();
     printVals();
-    if (!truth()) {
+    /*if (!truth()) {
       //linefollowing();
-      simple();
-    }
+      //simple();
+    }*/
   }
 
   //delay(100);
