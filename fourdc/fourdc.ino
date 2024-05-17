@@ -577,14 +577,11 @@ void loop() {
       stop();
     }
     */
-    /*printVals();
+    printVals();
     if (!truth()) {
       //linefollowing();
       simple();
-    }*/
-    leftFwd(speed);
-    rightBkd(speed);
-    
+    }
   }
 
   //delay(100);
