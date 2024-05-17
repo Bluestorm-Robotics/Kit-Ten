@@ -125,7 +125,7 @@ void printVals() {
 }
 
 void leftFwd(int vel) {
-  if (vel < 0) {
+  if (vel > 0) {
     leftBkd(abs(vel));
   } else {
     analogWrite(enAL, vel);
@@ -577,11 +577,13 @@ void loop() {
       stop();
     }
     */
-    printVals();
+    /*printVals();
     if (!truth()) {
       //linefollowing();
       simple();
-    }
+    }*/
+    leftFwd(speed);
+    rightBkd(speed);
     
   }
 
