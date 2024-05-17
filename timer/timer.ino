@@ -128,7 +128,7 @@ void timerIsr() {
   Serial.print(speedFeedbackRight, DEC);
   Serial.println(" RPM");
 
-  // end of timer ISP
+  // end of timer ISR
 }
 
 void setup() {
