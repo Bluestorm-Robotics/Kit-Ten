@@ -396,14 +396,26 @@ int checkColor(int sensor) {
       return 5;  // red
       seesRed = true;
     }
-    else if(sensor == rightPID){
-      if ((rgb[0][rightPID] > 2000) && (rgb[1][rightPID] > 4000)) {
+    else if(sensor == rightMid){
+      if ((rgb[0][rightMid] > 2000) && (rgb[1][rightMid] > 4000)) {
         return WHITE;  // white
-      } else if ((rgb[0][rightPID] < 2000 ) && (rgb[1][rightPID] < 4000)) {
+      } else if ((rgb[0][rightMid] < 2000 ) && (rgb[1][rightMid] < 4000)) {
         return BLACK;  // black
-      } else if ((rgb[0][rightPID] < 1500) && (rgb[1][rightPID] > 1500)) {
+      } else if ((rgb[0][rightMid] < 1500) && (rgb[1][rightMid] > 1500)) {
         return 3;  // green
-      } else if ((rgb[0][rightPID] > 1500) && (rgb[1][rightPID] < 1500)) {
+      } else if ((rgb[0][rightMid] > 1500) && (rgb[1][rightMid] < 1500)) {
+        return 5;  // red
+        seesRed = true;
+      }
+    }
+    else if(sensor == leftMid){
+      if ((rgb[0][leftMid] > 2000) && (rgb[1][leftMid] > 4000)) {
+        return WHITE;  // white
+      } else if ((rgb[0][leftMid] < 2000 ) && (rgb[1][leftMid] < 4000)) {
+        return BLACK;  // black
+      } else if ((rgb[0][leftMid] < 1500) && (rgb[1][leftMid] > 1500)) {
+        return 3;  // green
+      } else if ((rgb[0][leftMid] > 1500) && (rgb[1][leftMid] < 1500)) {
         return 5;  // red
         seesRed = true;
       }
