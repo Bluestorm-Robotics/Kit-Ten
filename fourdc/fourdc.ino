@@ -928,8 +928,8 @@ void loop() {
       stop();
     }
     */
-    //simple();
-    printVals();
+    simple();
+    //printVals();
     /*if (!truth()) {
       //linefollowing();
       //simple();
