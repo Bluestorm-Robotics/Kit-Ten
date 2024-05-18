@@ -73,10 +73,10 @@ SFE_ISL29125 RGB_sensors[8];
 */
 
 const int front = 4;
-const int leftMid = 2;
-const int rightMid = 6;
-const int leftBack = 5;
-const int rightBack = 7;
+const int leftMid = 6;
+const int rightMid = 2;
+const int leftBack = 7;
+const int rightBack = 5;
 const int leftPID = 0;
 const int rightPID = 1;
 const int back = 3;
@@ -280,11 +280,17 @@ void printVals() {
   Serial.print(rgb[1][front]);
   Serial.print(" ");
   Serial.println(rgb[3][front]);*/
-  Serial.println("Left: ");
+  Serial.print("leftMid: ");
+  Serial.print(rgb[0][leftMid]);
+  Serial.print(" ");
+  Serial.print(rgb[1][leftMid]);
+  Serial.print(" ");
+  Serial.println(rgb[3][leftMid]);
+  /*Serial.println("Left: ");
   Serial.print(checkColor(leftPID));
   Serial.println("right: ");
   Serial.print(checkColor(rightPID));
-  Serial.println("---------");
+  Serial.println("---------");*/
   delay(700);
 }
 
