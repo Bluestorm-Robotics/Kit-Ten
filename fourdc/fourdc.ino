@@ -744,22 +744,32 @@ else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
       if ((checkColor(leftMid) == BLACK) && (checkColor(rightMid) != BLACK)) {
         tcaselect(rightPID);
         while ((RGB_sensors[rightPID].readRed() > 2000) || (RGB_sensors[rightPID].readGreen() > 4000)) {
-          leftBkd(speedTargetLeft + 50);
-          rightFwd(speedTargetRight + 50);
+          leftBkd(speedTargetLeft + 75);
+          rightFwd(speedTargetRight + 75);
           delay(delayMs);
           stop();
           delay(delayMs);
         }
+        leftFwd(speedTargetLeft + 50);
+        rightBkd(speedTargetRight + 50);
+        delay(delayMs);
+        stop();
+        delay(delayMs);
         Serial.println("left corner");
       } else if ((checkColor(leftMid) != BLACK) && (checkColor(rightMid) == BLACK)) {
         tcaselect(leftPID);
         while ((RGB_sensors[leftPID].readRed() > 1300) || (RGB_sensors[leftPID].readGreen() > 2500)) {
-          leftFwd(speedTargetLeft + 50);
-          rightBkd(speedTargetRight + 50);
+          leftFwd(speedTargetLeft + 75);
+          rightBkd(speedTargetRight + 75);
           delay(delayMs);
           stop();
           delay(delayMs);
         }
+        leftBkd(speedTargetLeft+50);
+        rightFwd(speedTargetRight+50);
+        delay(delayMs);
+        stop();
+        delay(delayMs);
         Serial.println("right corner");
       }
     } else {
@@ -928,8 +938,8 @@ void loop() {
       stop();
     }
     */
-    //simple();
-    printVals();
+    simple();
+    //printVals();
     /*if (!truth()) {
       //linefollowing();
       //simple();
