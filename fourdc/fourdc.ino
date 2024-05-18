@@ -2,20 +2,23 @@
 #include "SparkFunISL29125.h"
 #include "TimerOne.h"
 #include <stdint.h>
-unsigned int counter = 0;
-unsigned int counter2 = 0;
+unsigned int counterLeft = 0;
+unsigned int counterRight = 0;
 
 #define TCAADDR 0x70
 
 #define trigPin 13
 #define echoPin 12
 
+#define BLACK 1
+#define WHITE 6
+
 bool seesRed;
 bool seesSilver;
 int P = 0.5;  // CALIBRATE THIS
-int Kp_speedInv = 2;   // Proportional feedback gain for speed sensor feedback (Inversed to stay as an integer, the SMALLER the value, the HIGHER the gain)
-int Ki_speedInv = 10;  // Integral feedback gain for speed sensor feedback (Inversed to stay as an integer, the SMALLER the value, the HIGHER the gain)
-int Kd_speedInv = 5;   // Derivative feedback gain for speed sensor feedback (Inversed to stay as an integer, the SMALLER the value, the HIGHER the gain)
+int Kp_speedInv =20;   // Proportional feedback gain for speed sensor feedback (Inversed to stay as an integer, the SMALLER the value, the HIGHER the gain)
+int Ki_speedInv = 20;  // Integral feedback gain for speed sensor feedback (Inversed to stay as an integer, the SMALLER the value, the HIGHER the gain)
+int Kd_speedInv = 10;   // Derivative feedback gain for speed sensor feedback (Inversed to stay as an integer, the SMALLER the value, the HIGHER the gain)
 
 int errLeft = 0;   // error from the left wheels
 int errRight = 0;  // error from the right wheels
@@ -36,18 +39,19 @@ int I_ValueRight = 0;  // I control right wheels
 int D_ValueLeft = 0;   // D control left wheels
 int D_ValueRight = 0;  // D control right wheels
 
-int speedMax = 250;  // maximum allowed wheel speed command
+int speedMax = 150;  // maximum allowed wheel speed command
+int speedMin = 50;  // minimum allowed wheel speed command
 
-int speedTargetNominal = 50;  // rpm, target speed before adjustment by RGB sensor for line tracking
+int speedTargetNominal = 75;  // rpm, target speed before adjustment by RGB sensor for line tracking
 
 int speedTargetLeft = 50;   // rpm, target speed for left wheels, adjusted by RGB sensor for line tracking
 int speedTargetRight = 50;  // rpm, target speed for right wheels adjusted by RGB sensor for line tracking
 
-int speedFeedbackLeft = 0;   // rpm, feedback control value for left wheels
-int speedFeedbackRight = 0;  // rpm, feedback control value for right wheels
+int speedFeedbackLeft = 0; // rpm, feedback value for left wheels
+int speedFeedbackRight = 0; // rpm, feedback value for right wheels
 
-int speedCommandLeft;   // rpm, command speed for left wheels, adjusted speed sensor feedback
-int speedCommandRight;  // rpm, command speed for right wheels, adjusted speed sensor feedback
+int speedCommandLeft = 50;   // rpm, command speed for left wheels, adjusted speed sensor feedback
+int speedCommandRight = 50;  // rpm, command speed for right wheels, adjusted speed sensor feedback
 
 //int speed; //depricated
 int delayMs = 50;
@@ -103,48 +107,56 @@ const int in4L = 41;
 
 void docount()  // counts from the speed sensor
 {
-  counter++;  // increase +1 the counter value
+  counterLeft++;  // increase +1 the counterLeft value
 }
 
 void docount2()  // counts from the speed sensor
 {
-  counter2++;  // increase +1 the counter value
+  counterRight++;  // increase +1 the counterRight value
 }
 void timerIsr() {
   Timer1.detachInterrupt();  //stop the timer
   Serial.print("Motor Speed: ");
-  int rotation = (counter * 3);  // divide by number of holes in Disc (20), divide by period (1 sec), then multiply by 60 to get RPM
-  int rotation2 = (counter2 * 3);
-  Serial.print(rotation, DEC);
+  int rotationLeft = (counterLeft * 5 * 3) / 7.5;  // divide by number of holes in Disc (20), divide by period (0.2 sec), then multiply by 60 to get RPM
+  // 7.5 is a fudge factor to account for the difference between demand and the actual measurement wiht the tt motor
+  if (speedTargetLeft < 0) rotationLeft = -rotationLeft;
+  int rotationRight = counterRight * 5 * 3 / 7.5;
+  if (speedTargetRight < 0) rotationRight = -rotationRight;
+  Serial.print(rotationLeft, DEC);
   Serial.println(" RPM and");
-  Serial.print(rotation2, DEC);
+  Serial.print(rotationRight, DEC);
   Serial.println(" RPM");
-  counter = 0;
-  counter2 = 0;                      //  reset counter to zero
+  counterLeft = 0;
+  counterRight = 0;                      //  reset counter to zero
   Timer1.attachInterrupt(timerIsr);  //enable the timer
   // below is the code for speed tracking inside timer ISP
 
   errPreviousLeft = errLeft;    // save the error value from the left wheel
   errPreviousRight = errRight;  // save the error value from the right wheel
 
-  errLeft = speedTargetLeft - rotation;     // update error for proportional feedback control for the left wheels
-  errRight = speedTargetRight - rotation2;  // update error for proportional feedback control for the right wheels
+  errLeft = speedTargetLeft - rotationLeft;     // update error for proportional feedback control for the left wheels
+  errRight = speedTargetRight - rotationRight;  // update error for proportional feedback control for the right wheels
 
-  if (speedCommandLeft < speedMax && speedCommandLeft > -speedMax)  // integrator anti-windup
-    err_I_Left = err_I_Left + errLeft;                              // error accumulation for integral feedback control for the left wheels
-
-  if (speedCommandRight < speedMax && speedCommandRight > -speedMax)  // integrator anti-windup
+  if (speedCommandLeft < speedMax && speedCommandLeft > speedMin) { // integrator anti-windup
+    err_I_Left = err_I_Left + errLeft;
+      Serial.print("err_I_Left: ");
+  Serial.print(err_I_Left, DEC);
+  Serial.println(" RPM");                              // error accumulation for integral feedback control for the left wheels
+      Serial.print("speedCommandLeft: ");
+  Serial.print(speedCommandLeft, DEC);
+  Serial.println(" RPM");    }
+  if (speedCommandRight < speedMax && speedCommandRight > speedMin)  // integrator anti-windup
     err_I_Right = err_I_Right + errRight;                             // error accumulation for integral feedback control for the right wheels
 
   err_D_Left = errLeft - errPreviousLeft;     // error calculation for derivation feedback control for the left wheels
   err_D_Right = errRight - errPreviousRight;  // error calculation for derivation feedback control for the right wheels
 
-  P_ValueLeft = errLeft / Kp_speedInv;       // Proportional feedback value for speed sensor feedback (Inversed gain to stay as an integer)
-  P_ValueRight = errRight / Kp_speedInv;     // Proportional feedback value for speed sensor feedback (Inversed gain to stay as an integer)
-  I_ValueLeft = err_I_Left / Ki_speedInv;    // Integral feedback value for speed sensor feedback (Inversed gain to stay as an integer)
-  I_ValueRight = err_I_Right / Ki_speedInv;  // Integral feedback value for speed sensor feedback (Inversed gain to stay as an integer)
-  D_ValueLeft = err_D_Left / Kd_speedInv;    // Derivative feedback value for speed sensor feedback (Inversed gain to stay as an integer)
-  D_ValueRight = err_D_Right / Kd_speedInv;  // Derivative feedback value for speed sensor feedback (Inversed gain to stay as an integer)
+  P_ValueLeft = 0; //errLeft / Kp_speedInv;       // Proportional feedback value for speed sensor feedback (Inversed gain to stay as an integer)
+  P_ValueRight = 0; //errRight / Kp_speedInv;     // Proportional feedback value for speed sensor feedback (Inversed gain to stay as an integer)
+  I_ValueLeft = 0; //err_I_Left / Ki_speedInv;    // Integral feedback value for speed sensor feedback (Inversed gain to stay as an integer)
+  I_ValueRight = 0; //err_I_Right / Ki_speedInv;  // Integral feedback value for speed sensor feedback (Inversed gain to stay as an integer)
+  D_ValueLeft = 0; //err_D_Left / Kd_speedInv;    // Derivative feedback value for speed sensor feedback (Inversed gain to stay as an integer)
+  D_ValueRight = 0; //err_D_Right / Kd_speedInv;  // Derivative feedback value for speed sensor feedback (Inversed gain to stay as an integer)
 
   speedFeedbackLeft = P_ValueLeft + I_ValueLeft + D_ValueLeft;      // feedback control for the left wheels
   speedFeedbackRight = P_ValueRight + I_ValueRight + D_ValueRight;  // feedback control for the right wheels
@@ -177,8 +189,8 @@ void timerIsr() {
   Serial.print(speedFeedbackLeft, DEC);
   Serial.println(" RPM");
 
-  Serial.print("rotation: ");
-  Serial.print(rotation, DEC);
+  Serial.print("rotationLeft: ");
+  Serial.print(rotationLeft, DEC);
   Serial.println(" RPM");
 
   /*Serial.print("speedFeedbackRight: ");
@@ -337,10 +349,10 @@ void stop() {
 /*
 int checkColor(int sensor) {
   if((rgb[0][sensor] > 40000) && (rgb[1][sensor] > 40000) && (rgb[2][sensor] > 30000)) {
-    return 6; // white
+    return WHITE; // white
   }
   else if((rgb[0][sensor] < 1000) && (rgb[1][sensor] < 1000) && (rgb[2][sensor] < 500)) {
-    return 1; // black
+    return BLACK; // black
   }
   else if((rgb[0][sensor] < 15000) && (rgb[1][sensor] > 20000) && (rgb[2][sensor] < 15000)) {
     return 3; // green
@@ -357,9 +369,9 @@ int checkColor(int sensor) {
 }*/
 int checkColor(int sensor) {
   if ((rgb[0][sensor] > 4000) && (rgb[1][sensor] > 7000)) {
-    return 6;  // white
+    return WHITE;  // white
   } else if ((rgb[0][sensor] < 1600 ) && (rgb[1][sensor] < 2500)) {
-    return 1;  // black
+    return BLACK;  // black
   } else if ((rgb[0][sensor] < 1500) && (rgb[1][sensor] > 1500)) {
     return 3;  // green
   } else if ((rgb[0][sensor] > 1500) && (rgb[1][sensor] < 1500)) {
@@ -575,56 +587,103 @@ bool truth() {  // 1984
 }
 
 void simple() {
-  if ((checkColor(leftPID) == 6) && (checkColor(rightPID) == 1)) {
-    leftBkd(speedCommandLeft);
+/*
+  if ((checkColor(leftPID) == WHITE) && (checkColor(rightPID) == BLACK)) {
+   speedTargetLeft = 0;   
+   speedTargetRight = speedTargetNominal;  
+   speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
+   speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
+    leftFwd(speedCommandLeft);
     rightFwd(speedCommandRight);
-    delay(delayMs);
-    stop();
-    delay(delayMs);
+ //   delay(delayMs);
+ //   stop();
+ //   delay(delayMs);
     Serial.print("left ");
-  } else if ((checkColor(leftPID) == 6) && (checkColor(rightPID) != 6)) {
-    leftBkd(speedCommandLeft);
+  } else 
+*/
+
+if ((checkColor(leftPID) == WHITE) && (checkColor(rightPID) != WHITE)) {
+   speedTargetLeft = 0;   
+   speedTargetRight = speedTargetNominal;  
+   speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
+   speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
+   if (speedCommandLeft < 0) speedCommandLeft = 0;
+    if (speedCommandRight < 0) speedCommandRight = 0;
+     leftFwd(speedCommandLeft);
     rightFwd(speedCommandRight);
-    delay(delayMs);
-    stop();
-    delay(delayMs);
-    Serial.print("left");
-  } else if ((checkColor(leftPID) != 1) && (checkColor(rightPID) == 1)) {
-    leftBkd(speedCommandLeft);
-    rightFwd(speedCommandRight);
-    delay(delayMs);
-    stop();
-    delay(delayMs);
+ //   delay(delayMs);
+ //   stop();
+ //   delay(delayMs);
     Serial.print("left ");
-  } else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 6)) {
+  } 
+/*
+else if ((checkColor(leftPID) != WHITE) && (checkColor(rightPID) == BLACK)) {
+   speedTargetLeft = 0;   
+   speedTargetRight = speedTargetNominal;  
+   speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
+   speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
+    leftFwd(speedCommandLeft);
+    rightFwd(speedCommandRight);
+ //   delay(delayMs);
+ //   stop();
+ //   delay(delayMs);
+    Serial.print("left ");
+  } 
+
+else if ((checkColor(leftPID) == BLACK) && (checkColor(rightPID) == WHITE)) {
     leftFwd(speedCommandLeft);
     rightFwd(speedCommandRight);
     delay(delayMs);
     stop();
     delay(delayMs);
     Serial.print("right ");
-  } else if ((checkColor(leftPID) != 6) && (checkColor(rightPID) == 6)) {
+  } 
+
+*/
+
+else if ((checkColor(leftPID) != WHITE) && (checkColor(rightPID) == WHITE)) {
+   speedTargetLeft = speedTargetNominal;   
+   speedTargetRight = 0;  
+   speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
+   speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
+   if (speedCommandLeft < 0) speedCommandLeft = 0;
+    if (speedCommandRight < 0) speedCommandRight = 0;
+      leftFwd(speedCommandLeft);
+    rightFwd(speedCommandRight);
+ //   delay(delayMs);
+ //   stop();
+ //   delay(delayMs);
+    Serial.print("Right ");
+  } 
+
+/*
+else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
     leftFwd(speedCommandLeft);
     rightFwd(speedCommandRight);
     delay(delayMs);
     stop();
     delay(delayMs);
     Serial.print("right ");
-  } else if ((checkColor(leftPID) != 1) && (checkColor(rightPID) == 1)) {
-    leftFwd(speedCommandLeft);
+  } 
+*/
+
+else if ((checkColor(leftPID) == WHITE) && (checkColor(rightPID) == WHITE)) {
+   speedTargetLeft = speedTargetNominal;   
+   speedTargetRight = speedTargetNominal;  
+   speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
+   speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
+   if (speedCommandLeft < 0) speedCommandLeft = 0;
+    if (speedCommandRight < 0) speedCommandRight = 0;
+      leftFwd(speedCommandLeft);
     rightFwd(speedCommandRight);
-    delay(delayMs);
-    stop();
-    delay(delayMs);
-    Serial.print("right ");
-  } else if ((checkColor(leftPID) == 6) && (checkColor(rightPID) == 6)) {
-    leftFwd(speedCommandLeft);
-    rightFwd(speedCommandRight);
-    delay(delayMs);
-    stop();
-    delay(delayMs);
-    Serial.print("straight ");
-  } else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 1)) {
+ //   delay(delayMs);
+ //   stop();
+ //   delay(delayMs);
+    Serial.print("all white ");
+  } 
+
+/*
+else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 1)) {
     leftFwd(speedCommandLeft);
     rightFwd(speedCommandRight);
     delay(delayMs);
@@ -632,13 +691,20 @@ void simple() {
     delay(delayMs);
     Serial.print("straight ");
   }
-  else {
-    leftFwd(speedCommandLeft);
+*/
+  else { // leftPID != WHITE && rightPID != WHITE
+  speedTargetLeft = speedTargetNominal;   
+   speedTargetRight = speedTargetNominal;  
+   speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
+   speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
+   if (speedCommandLeft < 0) speedCommandLeft = 0;
+    if (speedCommandRight < 0) speedCommandRight = 0;
+      leftFwd(speedCommandLeft);
     rightFwd(speedCommandRight);
-    delay(delayMs);
-    stop();
-    delay(delayMs);
-    Serial.print("straight (slow) ");
+//    delay(delayMs);
+//    stop();
+//    delay(delayMs);
+    Serial.print("both non-white ");
   }
 }
 
@@ -676,13 +742,13 @@ void simple() {
 
 void setup() {
   // put your setup code here, to run once:
-  Timer1.initialize(1000000);           // set timer for 1sec
+  Timer1.initialize(200000);           // set timer for 0.2sec
   attachInterrupt(0, docount, RISING);  // “0” – sensor connector to pin 2 on Arduino. increase counter when speed sensor pin goes High
   attachInterrupt(1, docount2, RISING);
   Timer1.attachInterrupt(timerIsr);  // enable the timer
   seesRed = false;
   distance = 0;
-  counter = 0;
+// counter = 0;
   Wire.begin();
 
   pinMode(enAR, OUTPUT);
@@ -724,12 +790,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   distance = getDistance();
   
-  
-  speedTargetLeft = speedTargetNominal + 0;   // This line needs to be modified to adjust left wheel target speed by RGB sensor readings for line tracking
-  speedTargetRight = speedTargetNominal + 0;  // This line needs to be modified to adjust left wheel target speed by RGB sensor readings for line tracking
 
-  speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
-  speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
 
   if (speedCommandLeft > speedMax) speedCommandLeft = speedMax;      // stay within speed limit
   if (speedCommandLeft < -speedMax) speedCommandLeft = -speedMax;    // stay within speed limit
@@ -809,3 +870,4 @@ void loop() {
   delay(2000);
   */
 }
+
