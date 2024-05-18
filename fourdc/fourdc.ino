@@ -44,8 +44,8 @@ int speedMin = 50;  // minimum allowed wheel speed command
 
 int speedTargetNominal = 75;  // rpm, target speed before adjustment by RGB sensor for line tracking
 
-int speedTargetLeft = 50;   // rpm, target speed for left wheels, adjusted by RGB sensor for line tracking
-int speedTargetRight = 50;  // rpm, target speed for right wheels adjusted by RGB sensor for line tracking
+int speedTargetLeft = 65;   // rpm, target speed for left wheels, adjusted by RGB sensor for line tracking
+int speedTargetRight = 65;  // rpm, target speed for right wheels adjusted by RGB sensor for line tracking
 
 int speedFeedbackLeft = 0; // rpm, feedback value for left wheels
 int speedFeedbackRight = 0; // rpm, feedback value for right wheels
@@ -116,16 +116,16 @@ void docount2()  // counts from the speed sensor
 }
 void timerIsr() {
   Timer1.detachInterrupt();  //stop the timer
-  Serial.print("Motor Speed: ");
+  //Serial.print("Motor Speed: ");
   int rotationLeft = (counterLeft * 5 * 3) / 7.5;  // divide by number of holes in Disc (20), divide by period (0.2 sec), then multiply by 60 to get RPM
   // 7.5 is a fudge factor to account for the difference between demand and the actual measurement wiht the tt motor
   if (speedTargetLeft < 0) rotationLeft = -rotationLeft;
   int rotationRight = counterRight * 5 * 3 / 7.5;
   if (speedTargetRight < 0) rotationRight = -rotationRight;
-  Serial.print(rotationLeft, DEC);
-  Serial.println(" RPM and");
-  Serial.print(rotationRight, DEC);
-  Serial.println(" RPM");
+  //Serial.print(rotationLeft, DEC);
+  //Serial.println(" RPM and");
+  //Serial.print(rotationRight, DEC);
+  //Serial.println(" RPM");
   counterLeft = 0;
   counterRight = 0;                      //  reset counter to zero
   Timer1.attachInterrupt(timerIsr);  //enable the timer
@@ -139,12 +139,13 @@ void timerIsr() {
 
   if (speedCommandLeft < speedMax && speedCommandLeft > speedMin) { // integrator anti-windup
     err_I_Left = err_I_Left + errLeft;
-      Serial.print("err_I_Left: ");
-  Serial.print(err_I_Left, DEC);
-  Serial.println(" RPM");                              // error accumulation for integral feedback control for the left wheels
-      Serial.print("speedCommandLeft: ");
-  Serial.print(speedCommandLeft, DEC);
-  Serial.println(" RPM");    }
+    //Serial.print("err_I_Left: ");
+    //Serial.print(err_I_Left, DEC);
+    //Serial.println(" RPM");                              // error accumulation for integral feedback control for the left wheels
+    //Serial.print("speedCommandLeft: ");
+    //Serial.print(speedCommandLeft, DEC);
+    //Serial.println(" RPM");    }
+  }
   if (speedCommandRight < speedMax && speedCommandRight > speedMin)  // integrator anti-windup
     err_I_Right = err_I_Right + errRight;                             // error accumulation for integral feedback control for the right wheels
 
@@ -161,21 +162,21 @@ void timerIsr() {
   speedFeedbackLeft = P_ValueLeft + I_ValueLeft + D_ValueLeft;      // feedback control for the left wheels
   speedFeedbackRight = P_ValueRight + I_ValueRight + D_ValueRight;  // feedback control for the right wheels
 
-  Serial.print("P_ValueLeft: ");
+  /*Serial.print("P_ValueLeft: ");
   Serial.print(P_ValueLeft, DEC);
   Serial.println(" RPM");
 
-  /*Serial.print("P_ValueRight: ");
+  Serial.print("P_ValueRight: ");
   Serial.print(P_ValueRight, DEC);
-  Serial.println(" RPM");*/
+  Serial.println(" RPM");
 
   Serial.print("I_ValueLeft: ");
   Serial.print(I_ValueLeft, DEC);
   Serial.println(" RPM");
 
-  /*Serial.print("I_ValueRight: ");
+  Serial.print("I_ValueRight: ");
   Serial.print(I_ValueRight, DEC);
-  Serial.println(" RPM");*/
+  Serial.println(" RPM");
 
   Serial.print("D_ValueLeft: ");
   Serial.print(D_ValueLeft, DEC);
@@ -183,7 +184,7 @@ void timerIsr() {
 
   /*Serial.print("D_ValueRight: ");
   Serial.print(D_ValueRight, DEC);
-  Serial.println(" RPM");*/
+  Serial.println(" RPM");
 
   Serial.print("speedFeedbackLeft: ");
   Serial.print(speedFeedbackLeft, DEC);
@@ -191,7 +192,7 @@ void timerIsr() {
 
   Serial.print("rotationLeft: ");
   Serial.print(rotationLeft, DEC);
-  Serial.println(" RPM");
+  Serial.println(" RPM");*/
 
   /*Serial.print("speedFeedbackRight: ");
   Serial.print(speedFeedbackRight, DEC);
@@ -266,7 +267,7 @@ void printVals() {
   Serial.print(" ");
   Serial.print(rgb[1][leftPID]);
   Serial.print(" ");
-  Serial.println(rgb[3][leftPID]);*/
+  Serial.println(rgb[3][leftPID]);
   Serial.print("Right: ");
   Serial.print(rgb[0][rightPID]);
   Serial.print(" ");
@@ -279,7 +280,11 @@ void printVals() {
   Serial.print(rgb[1][front]);
   Serial.print(" ");
   Serial.println(rgb[3][front]);*/
-    Serial.println("---------");
+  Serial.println("Left: ");
+  Serial.print(checkColor(leftPID));
+  Serial.println("right: ");
+  Serial.print(checkColor(rightPID));
+  Serial.println("---------");
   delay(700);
 }
 
@@ -368,24 +373,52 @@ int checkColor(int sensor) {
   else return 0;
 }*/
 int checkColor(int sensor) {
-  if ((rgb[0][sensor] > 4000) && (rgb[1][sensor] > 7000)) {
-    return WHITE;  // white
-  } else if ((rgb[0][sensor] < 1600 ) && (rgb[1][sensor] < 2500)) {
-    return BLACK;  // black
-  } else if ((rgb[0][sensor] < 1500) && (rgb[1][sensor] > 1500)) {
-    return 3;  // green
-  } else if ((rgb[0][sensor] > 1500) && (rgb[1][sensor] < 1500)) {
-    return 5;  // red
-    seesRed = true;
+  if(sensor == leftPID){
+    if ((rgb[0][leftPID] > 1300) && (rgb[1][leftPID] > 6000)) {
+      return WHITE;  // white
+    } else if ((rgb[0][leftPID] < 1300 ) && (rgb[1][leftPID] < 2500)) {
+      return BLACK;  // black
+    } else if ((rgb[0][leftPID] < 1500) && (rgb[1][leftPID] > 1500)) {
+      return 3;  // green
+    } else if ((rgb[0][leftPID] > 1500) && (rgb[1][leftPID] < 1500)) {
+      return 5;  // red
+      seesRed = true;
+    }
   }
+  else if(sensor == rightPID){
+    if ((rgb[0][rightPID] > 2000) && (rgb[1][rightPID] > 4000)) {
+      return WHITE;  // white
+    } else if ((rgb[0][rightPID] < 2000 ) && (rgb[1][rightPID] < 4000)) {
+      return BLACK;  // black
+    } else if ((rgb[0][rightPID] < 1500) && (rgb[1][rightPID] > 1500)) {
+      return 3;  // green
+    } else if ((rgb[0][rightPID] > 1500) && (rgb[1][rightPID] < 1500)) {
+      return 5;  // red
+      seesRed = true;
+    }
+    else if(sensor == rightPID){
+      if ((rgb[0][rightPID] > 2000) && (rgb[1][rightPID] > 4000)) {
+        return WHITE;  // white
+      } else if ((rgb[0][rightPID] < 2000 ) && (rgb[1][rightPID] < 4000)) {
+        return BLACK;  // black
+      } else if ((rgb[0][rightPID] < 1500) && (rgb[1][rightPID] > 1500)) {
+        return 3;  // green
+      } else if ((rgb[0][rightPID] > 1500) && (rgb[1][rightPID] < 1500)) {
+        return 5;  // red
+        seesRed = true;
+      }
+    }
+  }
+    
   /*
   else if((rgb[0][sensor] > 15000) && (rgb[1][sensor] < 15000) && (rgb[2][sensor] < 7000)) { //RECODE TO SILVER
     return 7; //silver
     seesSilver = !seesSilver;
   }
   */
-  else
+  else {
     return 0;
+  }
 }
 
 
@@ -602,20 +635,20 @@ void simple() {
   } else 
 */
 
-if ((checkColor(leftPID) == WHITE) && (checkColor(rightPID) != WHITE)) {
+if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
    speedTargetLeft = 0;   
    speedTargetRight = speedTargetNominal;  
    speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
    speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
-   if (speedCommandLeft < 0) speedCommandLeft = 0;
-    if (speedCommandRight < 0) speedCommandRight = 0;
-     leftFwd(speedCommandLeft);
-    rightFwd(speedCommandRight);
- //   delay(delayMs);
- //   stop();
- //   delay(delayMs);
-    Serial.print("left ");
-  } 
+  if (speedCommandLeft < 0) speedCommandLeft = 0;
+  if (speedCommandRight < 0) speedCommandRight = 0;
+  leftFwd(speedTargetLeft+50);
+  rightBkd(speedTargetRight+50);
+  delay(delayMs);
+  stop();
+  delay(delayMs);
+  Serial.println("right"); 
+} 
 /*
 else if ((checkColor(leftPID) != WHITE) && (checkColor(rightPID) == BLACK)) {
    speedTargetLeft = 0;   
@@ -646,15 +679,16 @@ else if ((checkColor(leftPID) != WHITE) && (checkColor(rightPID) == WHITE)) {
    speedTargetRight = 0;  
    speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
    speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
-   if (speedCommandLeft < 0) speedCommandLeft = 0;
-    if (speedCommandRight < 0) speedCommandRight = 0;
-      leftFwd(speedCommandLeft);
-    rightFwd(speedCommandRight);
- //   delay(delayMs);
- //   stop();
- //   delay(delayMs);
-    Serial.print("Right ");
-  } 
+  if (speedCommandLeft < 0) speedCommandLeft = 0;
+  if (speedCommandRight < 0) speedCommandRight = 0;
+  leftBkd(speedTargetLeft+50);
+  rightFwd(speedTargetRight+50);
+  delay(delayMs);
+  stop();
+  delay(delayMs);
+  Serial.println("left");
+ 
+}
 
 /*
 else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
@@ -672,14 +706,14 @@ else if ((checkColor(leftPID) == WHITE) && (checkColor(rightPID) == WHITE)) {
    speedTargetRight = speedTargetNominal;  
    speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
    speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
-   if (speedCommandLeft < 0) speedCommandLeft = 0;
-    if (speedCommandRight < 0) speedCommandRight = 0;
-      leftFwd(speedCommandLeft);
-    rightFwd(speedCommandRight);
- //   delay(delayMs);
- //   stop();
- //   delay(delayMs);
-    Serial.print("all white ");
+  if (speedCommandLeft < 0) speedCommandLeft = 0;
+  if (speedCommandRight < 0) speedCommandRight = 0;
+  leftFwd(speedTargetLeft+50);
+  rightFwd(speedTargetRight+50);
+  delay(delayMs);
+  stop();
+  delay(delayMs);
+  Serial.println("all white ");
   } 
 
 /*
@@ -693,18 +727,18 @@ else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 1)) {
   }
 */
   else { // leftPID != WHITE && rightPID != WHITE
-  speedTargetLeft = speedTargetNominal;   
-   speedTargetRight = speedTargetNominal;  
-   speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
-   speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
-   if (speedCommandLeft < 0) speedCommandLeft = 0;
+    speedTargetLeft = speedTargetNominal;   
+    speedTargetRight = speedTargetNominal;  
+    speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
+    speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
+    if (speedCommandLeft < 0) speedCommandLeft = 0;
     if (speedCommandRight < 0) speedCommandRight = 0;
-      leftFwd(speedCommandLeft);
-    rightFwd(speedCommandRight);
-//    delay(delayMs);
-//    stop();
-//    delay(delayMs);
-    Serial.print("both non-white ");
+    leftFwd(speedTargetLeft);
+    rightFwd(speedTargetRight);
+    delay(delayMs);
+    stop();
+    delay(delayMs);
+    Serial.println("both non-white ");
   }
 }
 
@@ -834,12 +868,12 @@ void loop() {
       stop();
       delay(10);
     }
-    else if(checkColor(leftPID) == 1) {
+    else if(Color(leftPID) == 1) {
       stop();
     }
     */
-    simple();
-    //printVals();
+    //simple();
+    printVals();
     /*if (!truth()) {
       //linefollowing();
       //simple();
