@@ -279,13 +279,19 @@ void printVals() {
   Serial.print(" ");
   Serial.print(rgb[1][front]);
   Serial.print(" ");
-  Serial.println(rgb[3][front]);*/
+  Serial.println(rgb[3][front]);
   Serial.print("leftMid: ");
   Serial.print(rgb[0][leftMid]);
   Serial.print(" ");
   Serial.print(rgb[1][leftMid]);
   Serial.print(" ");
-  Serial.println(rgb[3][leftMid]);
+  Serial.println(rgb[3][leftMid]);*/
+  Serial.print("rightMid: ");
+  Serial.print(rgb[0][rightMid]);
+  Serial.print(" ");
+  Serial.print(rgb[1][rightMid]);
+  Serial.print(" ");
+  Serial.println(rgb[3][rightMid]);
   /*Serial.println("Left: ");
   Serial.print(checkColor(leftPID));
   Serial.println("right: ");
@@ -415,9 +421,9 @@ int checkColor(int sensor) {
       }
     }
     else if(sensor == leftMid){
-      if ((rgb[0][leftMid] > 2000) && (rgb[1][leftMid] > 4000)) {
+      if ((rgb[0][leftMid] > 3000) && (rgb[1][leftMid] > 4000)) {
         return WHITE;  // white
-      } else if ((rgb[0][leftMid] < 2000 ) && (rgb[1][leftMid] < 4000)) {
+      } else if ((rgb[0][leftMid] < 3000 ) && (rgb[1][leftMid] < 4000)) {
         return BLACK;  // black
       } else if ((rgb[0][leftMid] < 1500) && (rgb[1][leftMid] > 1500)) {
         return 3;  // green
@@ -914,8 +920,8 @@ void loop() {
       stop();
     }
     */
-    //simple();
-    printVals();
+    simple();
+    //printVals();
     /*if (!truth()) {
       //linefollowing();
       //simple();
