@@ -749,8 +749,8 @@ else if ((checkColor(leftPID) == WHITE) && (checkColor(rightPID) == WHITE)) {
     Serial.println("right corner");
   }
   else {
-    leftFwd(speedTargetLeft+50);
-    rightFwd(speedTargetRight+50);
+    leftFwd(speedTargetLeft);
+    rightFwd(speedTargetRight);
     delay(delayMs);
     stop();
     delay(delayMs);
