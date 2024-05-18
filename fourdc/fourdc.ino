@@ -732,27 +732,29 @@ else if ((checkColor(leftPID) == WHITE) && (checkColor(rightPID) == WHITE)) {
    speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
   if (speedCommandLeft < 0) speedCommandLeft = 0;
   if (speedCommandRight < 0) speedCommandRight = 0;
-  if((checkColor(leftMid) == BLACK) && (checkColor(rightMid) != BLACK)) {
-    tcaselect(rightPID);
-    while((RGB_sensors[rightPID].readRed() > 2000 ) || (RGB_sensors[rightPID].readGreen() > 4000)) {
-      leftBkd(speedTargetLeft+50);
-      rightFwd(speedTargetRight+50);
-      delay(delayMs);
-      stop();
-      delay(delayMs);
+  if(checkColor(front) != BLACK) {
+    if((checkColor(leftMid) == BLACK) && (checkColor(rightMid) != BLACK)) {
+      tcaselect(rightPID);
+      while((RGB_sensors[rightPID].readRed() > 2000 ) || (RGB_sensors[rightPID].readGreen() > 4000)) {
+        leftBkd(speedTargetLeft+50);
+        rightFwd(speedTargetRight+50);
+        delay(delayMs);
+        stop();
+        delay(delayMs);
+      }
+      Serial.println("left corner");
     }
-    Serial.println("left corner");
-  }
-  else if((checkColor(leftMid) != BLACK) && (checkColor(rightMid) == BLACK)) {
-    tcaselect(leftPID);
-    while((RGB_sensors[leftPID].readRed() > 1300 ) || (RGB_sensors[leftPID].readGreen() > 2500)) {
-      leftFwd(speedTargetLeft+50);
-      rightBkd(speedTargetRight+50);
-      delay(delayMs);
-      stop();
-      delay(delayMs);
+    else if((checkColor(leftMid) != BLACK) && (checkColor(rightMid) == BLACK)) {
+      tcaselect(leftPID);
+      while((RGB_sensors[leftPID].readRed() > 1300 ) || (RGB_sensors[leftPID].readGreen() > 2500)) {
+        leftFwd(speedTargetLeft+50);
+        rightBkd(speedTargetRight+50);
+        delay(delayMs);
+        stop();
+        delay(delayMs);
+      }
+      Serial.println("right corner");
     }
-    Serial.println("right corner");
   }
   else {
     leftFwd(speedTargetLeft);
