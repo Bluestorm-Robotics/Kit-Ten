@@ -42,16 +42,16 @@ int D_ValueRight = 0;  // D control right wheels
 int speedMax = 150;  // maximum allowed wheel speed command
 int speedMin = 50;   // minimum allowed wheel speed command
 
-int speedTargetNominal = 75;  // rpm, target speed before adjustment by RGB sensor for line tracking
+int speedTargetNominal = 75;  // rpm, target speed bee adjustment by RGB sensor for line tracking
 
-int speedTargetLeft = 65;   // rpm, target speed for left wheels, adjusted by RGB sensor for line tracking
-int speedTargetRight = 65;  // rpm, target speed for right wheels adjusted by RGB sensor for line tracking
+int speedTargetLeft = 100;   // rpm, target speed for left wheels, adjusted by RGB sensor for line tracking
+int speedTargetRight = 100;  // rpm, target speed for right wheels adjusted by RGB sensor for line tracking
 
 int speedFeedbackLeft = 0;   // rpm, feedback value for left wheels
 int speedFeedbackRight = 0;  // rpm, feedback value for right wheels
 
-int speedCommandLeft = 50;   // rpm, command speed for left wheels, adjusted speed sensor feedback
-int speedCommandRight = 50;  // rpm, command speed for right wheels, adjusted speed sensor feedback
+int speedCommandLeft = 100;   // rpm, command speed for left wheels, adjusted speed sensor feedback
+int speedCommandRight = 100;  // rpm, command speed for right wheels, adjusted speed sensor feedback
 
 //int speed; //depricated
 int delayMs = 50;
@@ -262,7 +262,7 @@ void printNums() {
 }
 
 void printVals() {
-  /*Serial.print("Left: ");
+  Serial.print("Left: ");
   Serial.print(rgb[0][leftPID]);
   Serial.print(" ");
   Serial.print(rgb[1][leftPID]);
@@ -273,13 +273,13 @@ void printVals() {
   Serial.print(" ");
   Serial.print(rgb[1][rightPID]);
   Serial.print(" ");
-  Serial.println(rgb[3][rightPID]);*/
+  Serial.println(rgb[3][rightPID]);
   Serial.print("front: ");
   Serial.print(rgb[0][front]);
   Serial.print(" ");
   Serial.print(rgb[1][front]);
   Serial.print(" ");
-  Serial.println(rgb[3][front]);/*
+  Serial.println(rgb[3][front]);
   Serial.print("leftMid: ");
   Serial.print(rgb[0][leftMid]);
   Serial.print(" ");
@@ -292,10 +292,10 @@ void printVals() {
   Serial.print(rgb[1][rightMid]);
   Serial.print(" ");
   Serial.println(rgb[3][rightMid]);
-  /*Serial.println("Left: ");
+  Serial.println("Left: ");
   Serial.print(checkColor(leftPID));
   Serial.println("right: ");
-  Serial.print(checkColor(rightPID));*/
+  Serial.print(checkColor(rightPID));
   Serial.println("---------");
   delay(700);
 }
@@ -674,8 +674,8 @@ void simple() {
     speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
     if (speedCommandLeft < 0) speedCommandLeft = 0;
     if (speedCommandRight < 0) speedCommandRight = 0;
-    leftFwd(speedTargetLeft + 50);
-    rightBkd(speedTargetRight + 50);
+    leftFwd(speedTargetLeft + 75);
+    rightBkd(speedTargetRight + 75);
     delay(delayMs);
     stop();
     delay(delayMs);
@@ -713,8 +713,8 @@ else if ((checkColor(leftPID) == BLACK) && (checkColor(rightPID) == WHITE)) {
     speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
     if (speedCommandLeft < 0) speedCommandLeft = 0;
     if (speedCommandRight < 0) speedCommandRight = 0;
-    leftBkd(speedTargetLeft + 50);
-    rightFwd(speedTargetRight + 50);
+    leftBkd(speedTargetLeft + 75);
+    rightFwd(speedTargetRight + 75);
     delay(delayMs);
     stop();
     delay(delayMs);
@@ -759,14 +759,14 @@ else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
       } else if ((checkColor(leftMid) != BLACK) && (checkColor(rightMid) == BLACK)) {
         tcaselect(leftPID);
         while ((RGB_sensors[leftPID].readRed() > 1300) || (RGB_sensors[leftPID].readGreen() > 2500)) {
-          leftFwd(speedTargetLeft + 75);
-          rightBkd(speedTargetRight + 75);
+          leftFwd(speedTargetLeft + 50);
+          rightBkd(speedTargetRight + 50);
           delay(delayMs);
           stop();
           delay(delayMs);
         }
-        leftBkd(speedTargetLeft+50);
-        rightFwd(speedTargetRight+50);
+        leftBkd(speedTargetLeft + 50);
+        rightFwd(speedTargetRight + 50);
         delay(delayMs);
         stop();
         delay(delayMs);
@@ -919,9 +919,7 @@ void loop() {
 
 
 
-  if (seesRed) {
-    stop();
-  } else if (distance < 10) {
+  if (distance < 10) {
     //go around
     stop();
   } else {
