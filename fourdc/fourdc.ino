@@ -44,8 +44,8 @@ int speedMin = 50;   // minimum allowed wheel speed command
 
 int speedTargetNominal = 75;  // rpm, target speed bee adjustment by RGB sensor for line tracking
 
-int speedTargetLeft = 100;   // rpm, target speed for left wheels, adjusted by RGB sensor for line tracking
-int speedTargetRight = 100;  // rpm, target speed for right wheels adjusted by RGB sensor for line tracking
+int speedTargetLeft = 75;   // rpm, target speed for left wheels, adjusted by RGB sensor for line tracking
+int speedTargetRight = 75;  // rpm, target speed for right wheels adjusted by RGB sensor for line tracking
 
 int speedFeedbackLeft = 0;   // rpm, feedback value for left wheels
 int speedFeedbackRight = 0;  // rpm, feedback value for right wheels
@@ -699,14 +699,15 @@ void simple() {
       rightTurn();
     }
   } else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
-    speedTargetLeft = 0;
+    /*speedTargetLeft = 0;
     speedTargetRight = speedTargetNominal;
     speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
     speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
     if (speedCommandLeft < 0) speedCommandLeft = 0;
     if (speedCommandRight < 0) speedCommandRight = 0;
-    leftFwd(speedTargetLeft + 75);
-    rightBkd(speedTargetRight + 75);
+    */
+    leftFwd(speedTargetLeft);
+    rightBkd(speedTargetRight);
     delay(delayMs);
     stop();
     delay(delayMs);
@@ -738,14 +739,16 @@ else if ((checkColor(leftPID) == BLACK) && (checkColor(rightPID) == WHITE)) {
 */
 
   else if ((checkColor(leftPID) != WHITE) && (checkColor(rightPID) == WHITE)) {
+    /*
     speedTargetLeft = speedTargetNominal;
     speedTargetRight = 0;
     speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
     speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
     if (speedCommandLeft < 0) speedCommandLeft = 0;
     if (speedCommandRight < 0) speedCommandRight = 0;
-    leftBkd(speedTargetLeft + 30);
-    rightFwd(speedTargetRight + 75);
+    */
+    leftBkd(speedTargetLeft);
+    rightFwd(speedTargetRight);
     delay(delayMs);
     stop();
     delay(delayMs);
@@ -765,24 +768,26 @@ else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
 */
 
   else if ((checkColor(leftPID) == WHITE) && (checkColor(rightPID) == WHITE)) {
+    /*
     speedTargetLeft = speedTargetNominal;
     speedTargetRight = speedTargetNominal;
     speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
     speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
     if (speedCommandLeft < 0) speedCommandLeft = 0;
     if (speedCommandRight < 0) speedCommandRight = 0;
+    */
     if (checkColor(front) != BLACK) {
       if ((checkColor(leftMid) == BLACK) && (checkColor(rightMid) != BLACK)) {
         tcaselect(rightPID);
         while ((RGB_sensors[rightPID].readRed() > 2000) || (RGB_sensors[rightPID].readGreen() > 4000)) {
-          leftBkd(speedTargetLeft + 30);
-          rightFwd(speedTargetRight + 75);
+          leftBkd(speedTargetLeft);
+          rightFwd(speedTargetRight);
           delay(delayMs);
           stop();
           delay(delayMs);
         }
-        leftFwd(speedTargetLeft + 50);
-        rightBkd(speedTargetRight + 30);
+        leftFwd(speedTargetLeft);
+        rightBkd(speedTargetRight);
         delay(delayMs);
         stop();
         delay(delayMs);
@@ -790,14 +795,14 @@ else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
       } else if ((checkColor(leftMid) != BLACK) && (checkColor(rightMid) == BLACK)) {
         tcaselect(leftPID);
         while ((RGB_sensors[leftPID].readRed() > 1300) || (RGB_sensors[leftPID].readGreen() > 2500)) {
-          leftFwd(speedTargetLeft + 50);
-          rightBkd(speedTargetRight + 30);
+          leftFwd(speedTargetLeft);
+          rightBkd(speedTargetRight);
           delay(delayMs);
           stop();
           delay(delayMs);
         }
-        leftBkd(speedTargetLeft + 30);
-        rightFwd(speedTargetRight + 50);
+        leftBkd(speedTargetLeft);
+        rightFwd(speedTargetRight);
         delay(delayMs);
         stop();
         delay(delayMs);
@@ -824,12 +829,14 @@ else if ((checkColor(leftPID) == 1) && (checkColor(rightPID) == 1)) {
   }
 */
   else {  // leftPID != WHITE && rightPID != WHITE
+  /*
     speedTargetLeft = speedTargetNominal;
     speedTargetRight = speedTargetNominal;
     speedCommandLeft = speedTargetLeft + speedFeedbackLeft;     // PID control for the left wheels based on speed sensor feedback
     speedCommandRight = speedTargetRight + speedFeedbackRight;  // PID control for the right wheels based on speed sensor feedback
     if (speedCommandLeft < 0) speedCommandLeft = 0;
     if (speedCommandRight < 0) speedCommandRight = 0;
+    */
     leftFwd(speedTargetLeft);
     rightFwd(speedTargetRight);
     delay(delayMs);
@@ -947,10 +954,9 @@ void loop() {
   //Serial.print(rgb[0][front]); Serial.print(" "); Serial.print(rgb[1][front]); Serial.print(" "); Serial.println(rgb[3][front]);
   //Serial.println(checkColor(front));
   //Serial.print(checkColor(leftPID));Serial.print(" "); Serial.println(checkColor(rightPID));
-
-  //simple();
-  leftFwd(speedTargetLeft);
-  rightFwd(speedTargetRight);
+  simple();
+  //leftFwd(speedTargetLeft);
+  //rightFwd(speedTargetRight);
   //printVals();
 
   /*if (distance < 10) {
