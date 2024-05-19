@@ -776,6 +776,7 @@ else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
     if (speedCommandLeft < 0) speedCommandLeft = 0;
     if (speedCommandRight < 0) speedCommandRight = 0;
     */
+    /*
     if (checkColor(front) != BLACK) {
       if ((checkColor(leftMid) == BLACK) && (checkColor(rightMid) != BLACK)) {
         tcaselect(rightPID);
@@ -808,14 +809,14 @@ else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
         delay(delayMs);
         Serial.println("right corner");
       }
-    } else {
+    } else {*/
       leftFwd(speedTargetLeft);
       rightFwd(speedTargetRight);
       delay(delayMs);
       stop();
       delay(delayMs);
       Serial.println("all white ");
-    }
+    //}
   }
 
   /*
