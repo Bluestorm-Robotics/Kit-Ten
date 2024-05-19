@@ -491,7 +491,7 @@ void leftTurn() {
 
 void rightTurn() {
   leftFwd(speedCommandLeft);
-  rightFwd(speedCommandRight);
+  rightBkd(speedCommandRight);
   delay((1000 / 75) * speedTargetRight);
   stop();
 }
@@ -707,7 +707,7 @@ void simple() {
     if (speedCommandRight < 0) speedCommandRight = 0;
     */
     leftFwd(speedTargetLeft);
-    rightBkd(speedTargetRight);
+    rightBkd(speedTargetRight + 25);
     delay(delayMs);
     stop();
     delay(delayMs);
@@ -747,7 +747,7 @@ else if ((checkColor(leftPID) == BLACK) && (checkColor(rightPID) == WHITE)) {
     if (speedCommandLeft < 0) speedCommandLeft = 0;
     if (speedCommandRight < 0) speedCommandRight = 0;
     */
-    leftBkd(speedTargetLeft);
+    leftBkd(speedTargetLeft + 25);
     rightFwd(speedTargetRight);
     delay(delayMs);
     stop();
@@ -809,7 +809,8 @@ else if ((checkColor(leftPID) != BLACK) && (checkColor(rightPID) == BLACK)) {
         delay(delayMs);
         Serial.println("right corner");
       }
-    } else {*/
+    } else {
+      */
       leftFwd(speedTargetLeft);
       rightFwd(speedTargetRight);
       delay(delayMs);
